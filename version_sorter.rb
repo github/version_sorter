@@ -63,4 +63,13 @@ if $0 == __FILE__
       assert_equal sorted_versions, rsort(versions)
     end
   end
+
+  require 'benchmark'
+  versions = IO.read('tags.txt').split("\n")
+  count = 10
+  Benchmark.bm(20) do |x|
+    x.report("sort")             { count.times { VersionSorter.sort(versions) } }
+  end
+  puts
+
 end
