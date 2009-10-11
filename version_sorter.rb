@@ -1,47 +1,30 @@
-# stolen from http://blade.nagaokaut.ac.jp/cgi-bin/scat.rb/ruby/ruby-talk/53779
+require 'ffi'
+require 'pp'
+
 module VersionSorter
+  extend FFI::Library
+
+  ffi_lib "ext/version_sorter/build/Debug/libversion_sorter.dylib"
+  attach_function :version_sorter_sort, [:pointer, :int], :void
+
   extend self
 
   def sort(list)
-    list.sort { |a, b| versioncmp(a, b) }
+
+    strptrs = list.map { |x| FFI::MemoryPointer.from_string(x) }
+
+    argv = FFI::MemoryPointer.new(:pointer, list.size)
+    argv.write_array_of_pointer(strptrs)
+
+    version_sorter_sort(argv, list.size)
+
+    argv.read_array_of_pointer(list.size).map { |x| x.get_string(0) }
   end
 
   def rsort(list)
-    list.sort { |a, b| -versioncmp(a, b) }
-  end
-
-private
-  def versioncmp(version_a, version_b)
-    vre = /[-.]|\d+|[^-.\d]+/
-    ax = version_a.scan(vre)
-    bx = version_b.scan(vre)
-
-    while ax.length > 0 && bx.length > 0
-      a = ax.shift
-      b = bx.shift
-
-      if( a == b )                 then next
-      elsif (a == '-' && b == '-') then next
-      elsif (a == '-')             then return -1
-      elsif (b == '-')             then return 1
-      elsif (a == '.' && b == '.') then next
-      elsif (a == '.' )            then return -1
-      elsif (b == '.' )            then return 1
-      elsif (a =~ /^\d+$/ && b =~ /^\d+$/) then
-        if( a =~ /^0/ or b =~ /^0/ ) then
-          return a.to_s.upcase <=> b.to_s.upcase
-        end
-        return a.to_i <=> b.to_i
-      else
-        return a.upcase <=> b.upcase
-      end
-    end
-
-    version_a <=> version_b
+    sort(list).reverse
   end
 end
-
-puts
 
 if $0 == __FILE__
   require 'test/unit'
@@ -69,6 +52,7 @@ if $0 == __FILE__
   count = 10
   Benchmark.bm(20) do |x|
     x.report("sort")             { count.times { VersionSorter.sort(versions) } }
+    x.report("rsot")             { count.times { VersionSorter.rsort(versions) } }
   end
   puts
 

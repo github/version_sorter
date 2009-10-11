@@ -1,0 +1,4 @@
+# xcode noise
+ext/version_sorter/build/*
+*.pbxuser
+*.mode1v3
