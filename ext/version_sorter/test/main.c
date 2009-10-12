@@ -20,7 +20,6 @@
 #include <sys/times.h>
 #include "version_sorter.h"
 
-
 #define ARRAY_LENGH(x) \
     (sizeof(x)/sizeof(x[0]))
 

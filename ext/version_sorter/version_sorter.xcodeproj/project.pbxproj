@@ -1,0 +1,255 @@
+// !$*UTF8*$!
+{
+	archiveVersion = 1;
+	classes = {
+	};
+	objectVersion = 45;
+	objects = {
+
+/* Begin PBXBuildFile section */
+		70D1A11C1083E7E3004A83F6 /* main.c in Sources */ = {isa = PBXBuildFile; fileRef = 70D1A1191083E7E3004A83F6 /* main.c */; };
+		70D1A11D1083E7E3004A83F6 /* version_sorter.c in Sources */ = {isa = PBXBuildFile; fileRef = 70D1A11A1083E7E3004A83F6 /* version_sorter.c */; };
+		70D1A11E1083E7E3004A83F6 /* version_sorter.h in Headers */ = {isa = PBXBuildFile; fileRef = 70D1A11B1083E7E3004A83F6 /* version_sorter.h */; };
+		70D1A1201083E80C004A83F6 /* pcre.h in Headers */ = {isa = PBXBuildFile; fileRef = 70D1A11F1083E80C004A83F6 /* pcre.h */; };
+		70D1A1221083E822004A83F6 /* cmockery.h in Headers */ = {isa = PBXBuildFile; fileRef = 70D1A1211083E822004A83F6 /* cmockery.h */; };
+		70D1A12B1083E86A004A83F6 /* libpcre.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 70D1A12A1083E86A004A83F6 /* libpcre.dylib */; };
+		70D1A12E1083E89E004A83F6 /* libprofiler.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 70D1A12D1083E89E004A83F6 /* libprofiler.dylib */; };
+		70D1A1301083E8B9004A83F6 /* libcmockery.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 70D1A12F1083E8B9004A83F6 /* libcmockery.dylib */; };
+		70D1A1321083E937004A83F6 /* ruby.h in Headers */ = {isa = PBXBuildFile; fileRef = 70D1A1311083E937004A83F6 /* ruby.h */; };
+		70D1A1381083E979004A83F6 /* libruby.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 70D1A1371083E979004A83F6 /* libruby.dylib */; };
+/* End PBXBuildFile section */
+
+/* Begin PBXFileReference section */
+		70D1A1191083E7E3004A83F6 /* main.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = main.c; sourceTree = "<group>"; };
+		70D1A11A1083E7E3004A83F6 /* version_sorter.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = version_sorter.c; sourceTree = "<group>"; };
+		70D1A11B1083E7E3004A83F6 /* version_sorter.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = version_sorter.h; sourceTree = "<group>"; };
+		70D1A11F1083E80C004A83F6 /* pcre.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = pcre.h; path = /opt/local/include/pcre.h; sourceTree = "<absolute>"; };
+		70D1A1211083E822004A83F6 /* cmockery.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = cmockery.h; path = /opt/local/include/google/cmockery.h; sourceTree = "<absolute>"; };
+		70D1A12A1083E86A004A83F6 /* libpcre.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libpcre.dylib; path = /opt/local/lib/libpcre.dylib; sourceTree = "<absolute>"; };
+		70D1A12D1083E89E004A83F6 /* libprofiler.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libprofiler.dylib; path = /opt/local/lib/libprofiler.dylib; sourceTree = "<absolute>"; };
+		70D1A12F1083E8B9004A83F6 /* libcmockery.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libcmockery.dylib; path = /opt/local/lib/libcmockery.dylib; sourceTree = "<absolute>"; };
+		70D1A1311083E937004A83F6 /* ruby.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = ruby.h; path = "/opt/local/lib/ruby/1.8/i686-darwin9/ruby.h"; sourceTree = "<absolute>"; };
+		70D1A1371083E979004A83F6 /* libruby.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libruby.dylib; path = /opt/local/lib/libruby.dylib; sourceTree = "<absolute>"; };
+		8DD76FB20486AB0100D96B5E /* version_sorter */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = version_sorter; sourceTree = BUILT_PRODUCTS_DIR; };
+/* End PBXFileReference section */
+
+/* Begin PBXFrameworksBuildPhase section */
+		8DD76FAD0486AB0100D96B5E /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				70D1A12B1083E86A004A83F6 /* libpcre.dylib in Frameworks */,
+				70D1A12E1083E89E004A83F6 /* libprofiler.dylib in Frameworks */,
+				70D1A1301083E8B9004A83F6 /* libcmockery.dylib in Frameworks */,
+				70D1A1381083E979004A83F6 /* libruby.dylib in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXFrameworksBuildPhase section */
+
+/* Begin PBXGroup section */
+		08FB7794FE84155DC02AAC07 /* version_sorter */ = {
+			isa = PBXGroup;
+			children = (
+				70D1A12C1083E87B004A83F6 /* Libs */,
+				08FB7795FE84155DC02AAC07 /* Source */,
+				1AB674ADFE9D54B511CA2CBB /* Products */,
+			);
+			name = version_sorter;
+			sourceTree = "<group>";
+		};
+		08FB7795FE84155DC02AAC07 /* Source */ = {
+			isa = PBXGroup;
+			children = (
+				70D1A1181083E7E3004A83F6 /* test */,
+				70D1A11A1083E7E3004A83F6 /* version_sorter.c */,
+				70D1A11B1083E7E3004A83F6 /* version_sorter.h */,
+				70D1A1311083E937004A83F6 /* ruby.h */,
+				70D1A11F1083E80C004A83F6 /* pcre.h */,
+			);
+			name = Source;
+			sourceTree = "<group>";
+		};
+		1AB674ADFE9D54B511CA2CBB /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				8DD76FB20486AB0100D96B5E /* version_sorter */,
+			);
+			name = Products;
+			sourceTree = "<group>";
+		};
+		70D1A1181083E7E3004A83F6 /* test */ = {
+			isa = PBXGroup;
+			children = (
+				70D1A1211083E822004A83F6 /* cmockery.h */,
+				70D1A1191083E7E3004A83F6 /* main.c */,
+			);
+			path = test;
+			sourceTree = "<group>";
+		};
+		70D1A12C1083E87B004A83F6 /* Libs */ = {
+			isa = PBXGroup;
+			children = (
+				70D1A1371083E979004A83F6 /* libruby.dylib */,
+				70D1A12F1083E8B9004A83F6 /* libcmockery.dylib */,
+				70D1A12D1083E89E004A83F6 /* libprofiler.dylib */,
+				70D1A12A1083E86A004A83F6 /* libpcre.dylib */,
+			);
+			name = Libs;
+			sourceTree = "<group>";
+		};
+/* End PBXGroup section */
+
+/* Begin PBXHeadersBuildPhase section */
+		70D1A1171083E7D2004A83F6 /* Headers */ = {
+			isa = PBXHeadersBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				70D1A11E1083E7E3004A83F6 /* version_sorter.h in Headers */,
+				70D1A1201083E80C004A83F6 /* pcre.h in Headers */,
+				70D1A1221083E822004A83F6 /* cmockery.h in Headers */,
+				70D1A1321083E937004A83F6 /* ruby.h in Headers */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXHeadersBuildPhase section */
+
+/* Begin PBXNativeTarget section */
+		8DD76FA90486AB0100D96B5E /* version_sorter */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 1DEB928508733DD80010E9CD /* Build configuration list for PBXNativeTarget "version_sorter" */;
+			buildPhases = (
+				8DD76FAB0486AB0100D96B5E /* Sources */,
+				8DD76FAD0486AB0100D96B5E /* Frameworks */,
+				70D1A1171083E7D2004A83F6 /* Headers */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = version_sorter;
+			productInstallPath = "$(HOME)/bin";
+			productName = version_sorter;
+			productReference = 8DD76FB20486AB0100D96B5E /* version_sorter */;
+			productType = "com.apple.product-type.tool";
+		};
+/* End PBXNativeTarget section */
+
+/* Begin PBXProject section */
+		08FB7793FE84155DC02AAC07 /* Project object */ = {
+			isa = PBXProject;
+			buildConfigurationList = 1DEB928908733DD80010E9CD /* Build configuration list for PBXProject "version_sorter" */;
+			compatibilityVersion = "Xcode 3.1";
+			hasScannedForEncodings = 1;
+			mainGroup = 08FB7794FE84155DC02AAC07 /* version_sorter */;
+			projectDirPath = "";
+			projectRoot = "";
+			targets = (
+				8DD76FA90486AB0100D96B5E /* version_sorter */,
+			);
+		};
+/* End PBXProject section */
+
+/* Begin PBXSourcesBuildPhase section */
+		8DD76FAB0486AB0100D96B5E /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				70D1A11C1083E7E3004A83F6 /* main.c in Sources */,
+				70D1A11D1083E7E3004A83F6 /* version_sorter.c in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXSourcesBuildPhase section */
+
+/* Begin XCBuildConfiguration section */
+		1DEB928608733DD80010E9CD /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				COPY_PHASE_STRIP = NO;
+				GCC_DYNAMIC_NO_PIC = NO;
+				GCC_ENABLE_FIX_AND_CONTINUE = YES;
+				GCC_MODEL_TUNING = G5;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				INSTALL_PATH = /usr/local/bin;
+				LIBRARY_SEARCH_PATHS = (
+					"$(inherited)",
+					/opt/local/lib,
+				);
+				PRODUCT_NAME = version_sorter;
+			};
+			name = Debug;
+		};
+		1DEB928708733DD80010E9CD /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				GCC_MODEL_TUNING = G5;
+				INSTALL_PATH = /usr/local/bin;
+				LIBRARY_SEARCH_PATHS = (
+					"$(inherited)",
+					/opt/local/lib,
+				);
+				PRODUCT_NAME = version_sorter;
+			};
+			name = Release;
+		};
+		1DEB928A08733DD80010E9CD /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ARCHS = "$(ARCHS_STANDARD_32_BIT)";
+				GCC_C_LANGUAGE_STANDARD = c99;
+				GCC_FEEDBACK_DIRECTED_OPTIMIZATION = Off;
+				GCC_INSTRUMENT_PROGRAM_FLOW_ARCS = NO;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				GENERATE_PROFILING_CODE = YES;
+				ONLY_ACTIVE_ARCH = YES;
+				PREBINDING = NO;
+				SDKROOT = macosx10.5;
+			};
+			name = Debug;
+		};
+		1DEB928B08733DD80010E9CD /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ARCHS = "$(ARCHS_STANDARD_32_BIT)";
+				GCC_C_LANGUAGE_STANDARD = c99;
+				GCC_FEEDBACK_DIRECTED_OPTIMIZATION = Off;
+				GCC_INSTRUMENT_PROGRAM_FLOW_ARCS = NO;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				GENERATE_PROFILING_CODE = YES;
+				PREBINDING = NO;
+				SDKROOT = macosx10.5;
+			};
+			name = Release;
+		};
+/* End XCBuildConfiguration section */
+
+/* Begin XCConfigurationList section */
+		1DEB928508733DD80010E9CD /* Build configuration list for PBXNativeTarget "version_sorter" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				1DEB928608733DD80010E9CD /* Debug */,
+				1DEB928708733DD80010E9CD /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		1DEB928908733DD80010E9CD /* Build configuration list for PBXProject "version_sorter" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				1DEB928A08733DD80010E9CD /* Debug */,
+				1DEB928B08733DD80010E9CD /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+/* End XCConfigurationList section */
+	};
+	rootObject = 08FB7793FE84155DC02AAC07 /* Project object */;
+}
