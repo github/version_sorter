@@ -116,7 +116,7 @@ parse_version_word(VersionSortingItem *vsi)
     int flags = 0;
     char *part;
 
-    while (0 < pcre_exec(expr, 0, vsi->original, strlen(vsi->original), offset, flags, ovector, ovecsize)) {
+    while (0 < pcre_exec(expr, 0, vsi->original, vsi->original_len, offset, flags, ovector, ovecsize)) {
         
         part = malloc((vsi->original_len+1) * sizeof(char));
         if (part == NULL) {
