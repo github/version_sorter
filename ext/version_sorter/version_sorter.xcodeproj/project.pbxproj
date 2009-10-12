@@ -9,12 +9,6 @@
 /* Begin PBXBuildFile section */
 		F011500410812E4D00F0E0BF /* main.c in Sources */ = {isa = PBXBuildFile; fileRef = F011500310812E4D00F0E0BF /* main.c */; };
 		F011500610812EA000F0E0BF /* cmockery.h in Headers */ = {isa = PBXBuildFile; fileRef = F011500510812EA000F0E0BF /* cmockery.h */; };
-		F026A405108184440053BAF6 /* strings.h in Headers */ = {isa = PBXBuildFile; fileRef = F026A403108184440053BAF6 /* strings.h */; };
-		F026A406108184440053BAF6 /* strings.c in Sources */ = {isa = PBXBuildFile; fileRef = F026A404108184440053BAF6 /* strings.c */; };
-		F026A407108184440053BAF6 /* strings.h in Headers */ = {isa = PBXBuildFile; fileRef = F026A403108184440053BAF6 /* strings.h */; };
-		F026A408108184440053BAF6 /* strings.c in Sources */ = {isa = PBXBuildFile; fileRef = F026A404108184440053BAF6 /* strings.c */; };
-		F055BA4010814568005E572C /* utils.h in Headers */ = {isa = PBXBuildFile; fileRef = F055BA3F10814568005E572C /* utils.h */; };
-		F055BA4110814568005E572C /* utils.h in Headers */ = {isa = PBXBuildFile; fileRef = F055BA3F10814568005E572C /* utils.h */; };
 		F08A592710818CAF00C347D9 /* libpcre.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = F08A592610818CAF00C347D9 /* libpcre.dylib */; };
 		F08A592910818CCF00C347D9 /* pcre.h in Headers */ = {isa = PBXBuildFile; fileRef = F08A592810818CCF00C347D9 /* pcre.h */; };
 		F08A592A10818CCF00C347D9 /* pcre.h in Headers */ = {isa = PBXBuildFile; fileRef = F08A592810818CCF00C347D9 /* pcre.h */; };
@@ -30,9 +24,6 @@
 		D2AAC0630554660B00DB518D /* libversion_sorter.dylib */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.dylib"; includeInIndex = 0; path = libversion_sorter.dylib; sourceTree = BUILT_PRODUCTS_DIR; };
 		F011500310812E4D00F0E0BF /* main.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = main.c; sourceTree = "<group>"; };
 		F011500510812EA000F0E0BF /* cmockery.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = cmockery.h; path = /opt/local/include/google/cmockery.h; sourceTree = "<absolute>"; };
-		F026A403108184440053BAF6 /* strings.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = strings.h; path = src/strings.h; sourceTree = "<group>"; };
-		F026A404108184440053BAF6 /* strings.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = strings.c; path = src/strings.c; sourceTree = "<group>"; };
-		F055BA3F10814568005E572C /* utils.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = utils.h; path = src/utils.h; sourceTree = "<group>"; };
 		F08A592610818CAF00C347D9 /* libpcre.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libpcre.dylib; path = /opt/local/lib/libpcre.dylib; sourceTree = "<absolute>"; };
 		F08A592810818CCF00C347D9 /* pcre.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = pcre.h; path = /opt/local/include/pcre.h; sourceTree = "<absolute>"; };
 		F0DA6E3D1080CD0200DD2197 /* version_sorter_test */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = version_sorter_test; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -105,9 +96,6 @@
 			children = (
 				F011500210812E4D00F0E0BF /* Test */,
 				F08A592810818CCF00C347D9 /* pcre.h */,
-				F026A403108184440053BAF6 /* strings.h */,
-				F026A404108184440053BAF6 /* strings.c */,
-				F055BA3F10814568005E572C /* utils.h */,
 				F0DA97D010812E1600168380 /* version_sorter.c */,
 				F0DA97D110812E1600168380 /* version_sorter.h */,
 			);
@@ -122,8 +110,6 @@
 			buildActionMask = 2147483647;
 			files = (
 				F0DA97D910812E1600168380 /* version_sorter.h in Headers */,
-				F055BA4110814568005E572C /* utils.h in Headers */,
-				F026A407108184440053BAF6 /* strings.h in Headers */,
 				F08A592A10818CCF00C347D9 /* pcre.h in Headers */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -134,8 +120,6 @@
 			files = (
 				F0DA97D510812E1600168380 /* version_sorter.h in Headers */,
 				F011500610812EA000F0E0BF /* cmockery.h in Headers */,
-				F055BA4010814568005E572C /* utils.h in Headers */,
-				F026A405108184440053BAF6 /* strings.h in Headers */,
 				F08A592910818CCF00C347D9 /* pcre.h in Headers */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -201,7 +185,6 @@
 			buildActionMask = 2147483647;
 			files = (
 				F0DA97D810812E1600168380 /* version_sorter.c in Sources */,
-				F026A408108184440053BAF6 /* strings.c in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -211,7 +194,6 @@
 			files = (
 				F0DA97D410812E1600168380 /* version_sorter.c in Sources */,
 				F011500410812E4D00F0E0BF /* main.c in Sources */,
-				F026A406108184440053BAF6 /* strings.c in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

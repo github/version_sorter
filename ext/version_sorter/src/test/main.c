@@ -18,13 +18,19 @@
 #include <time.h>
 #include <unistd.h>
 #include <sys/times.h>
-#include "utils.h"
-#include "strings.h"
 #include "version_sorter.h"
 
-extern void parse_version_word(StringLinkedList *);
+
+#define ARRAY_LENGH(x) \
+    (sizeof(x)/sizeof(x[0]))
+
+extern VersionSortingItem * version_sorting_item_init(const char *);
+extern void version_sorting_item_free(VersionSortingItem *);
+extern void version_sorting_item_add_piece(VersionSortingItem *, char *);
 extern void setup_version_regex(void);
-extern void create_normalized_version(StringLinkedList *, int);
+extern void parse_version_word(VersionSortingItem *);
+extern void create_normalized_version(VersionSortingItem *, const int);
+extern int compare_by_version(const void *, const void *);
 
 static char *unsorted[] = {
     "1.0.9",        "1.0.10",       "1.10.1",
@@ -60,29 +66,24 @@ test_sort(void **state)
 void
 test_parse_version_word(void **state)
 {
-    StringLinkedList *sll = string_linked_list_init("1.0.10a");
-
-    parse_version_word(sll);
+    VersionSortingItem *vsi = version_sorting_item_init("1.0.10a");
     
-    assert((strcmp("1", sll->head->str)) == 0);
-    assert((strcmp("0", sll->head->next->str)) == 0);
-    assert((strcmp("10", sll->head->next->next->str)) == 0);
-    assert((strcmp("a", sll->tail->str)) == 0);
+    assert((strcmp("1", vsi->head->str)) == 0);
+    assert((strcmp("0", vsi->head->next->str)) == 0);
+    assert((strcmp("10", vsi->head->next->next->str)) == 0);
+    assert((strcmp("a", vsi->tail->str)) == 0);
     
-    string_linked_list_free(sll);
+    version_sorting_item_free(vsi);
 }
 
 void
 test_create_normalized_version(void **state)
 {
-    StringLinkedList *sll = string_linked_list_init("1.0.10a");
+    VersionSortingItem *vsi = version_sorting_item_init("1.0.10a");
 
-    parse_version_word(sll);
-    create_normalized_version(sll, 2);
+    assert((strcmp(" 1 010 a", vsi->normalized)) == 0);
 
-    assert((strcmp(" 1 010 a", sll->normalized)) == 0);
-
-    string_linked_list_free(sll);
+    version_sorting_item_free(vsi);
 }
 
 static void 
@@ -94,7 +95,7 @@ benchmark_sort(void **state)
     double user, system, real;
     
     real_start = times(&start);
-    for (i = 0; i < 10; i++) {
+    for (i = 0; i < 100; i++) {
         version_sorter_sort(benchmark_list, ARRAY_LENGH(benchmark_list));
     }
     real_end = times(&end);

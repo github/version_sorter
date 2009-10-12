@@ -12,15 +12,21 @@
 #include <string.h>
 #include <ctype.h>
 #include <pcre.h>
-#include "strings.h"
-#include "utils.h"
 #include "version_sorter.h"
 
 #define static
 
 static pcre *expr;
+static VersionSortingItem * version_sorting_item_init(const char *);
+static void version_sorting_item_free(VersionSortingItem *);
+static void version_sorting_item_add_piece(VersionSortingItem *, char *);
+static void setup_version_regex(void);
+static void parse_version_word(VersionSortingItem *);
+static void create_normalized_version(VersionSortingItem *, const int);
+static int compare_by_version(const void *, const void *);
 
-static void
+
+void
 setup_version_regex(void)
 {
     const char *pattern = "(\\d+|[a-zA-Z]+)";
@@ -33,8 +39,63 @@ setup_version_regex(void)
     }    
 }
 
-static void
-parse_version_word(StringLinkedList *sll)
+VersionSortingItem *
+version_sorting_item_init(const char *original)
+{
+    VersionSortingItem *vsi = malloc(sizeof(VersionSortingItem));
+    if (vsi == NULL) {
+        DIE("ERROR: Not enough memory to allocate VersionSortingItem")
+    }
+    vsi->head = NULL;
+    vsi->tail = NULL;
+    vsi->node_len = 0;
+    vsi->widest_len = 0;
+    vsi->original = original;
+    vsi->original_len = strlen(original);
+    parse_version_word(vsi);
+    
+    return vsi;
+}
+
+void
+version_sorting_item_free(VersionSortingItem *vsi)
+{
+    VersionPiece *cur;
+    while (cur = vsi->head) {
+        vsi->head = cur->next;
+        free(cur->str);
+        free(cur);
+    }
+    free(vsi->normalized);
+    free(vsi);
+}
+
+void
+version_sorting_item_add_piece(VersionSortingItem *vsi, char *str)
+{
+    VersionPiece *piece = malloc(sizeof(VersionPiece));
+    if (piece == NULL) {
+        DIE("ERROR: Not enough memory to allocate string linked list node")
+    }
+    piece->str = str;
+    piece->len = strlen(str);
+    piece->next = NULL;
+    
+    if (vsi->head == NULL) {
+        vsi->head = piece;
+        vsi->tail = piece;
+    } else {
+        vsi->tail->next = piece;
+        vsi->tail = piece;
+    }
+    vsi->node_len++;
+    if (piece->len > vsi->widest_len) {
+        vsi->widest_len = piece->len;
+    }
+}
+
+void
+parse_version_word(VersionSortingItem *vsi)
 {
     if (expr == NULL) {
         setup_version_regex();
@@ -55,16 +116,16 @@ parse_version_word(StringLinkedList *sll)
     int flags = 0;
     char *part;
 
-    while (0 < pcre_exec(expr, 0, sll->original, strlen(sll->original), offset, flags, ovector, ovecsize)) {
+    while (0 < pcre_exec(expr, 0, vsi->original, strlen(vsi->original), offset, flags, ovector, ovecsize)) {
         
-        part = malloc((WORD_MAX_LEN+1) * sizeof(char));
+        part = malloc((vsi->original_len+1) * sizeof(char));
         if (part == NULL) {
             DIE("ERROR: Not enough memory to allocate word")
         }
 
-        snprintf(part, WORD_MAX_LEN+1, "%.*s", ovector[1]-ovector[0], sll->original+ovector[0]);
+        snprintf(part, vsi->original_len+1, "%.*s", ovector[1]-ovector[0], vsi->original+ovector[0]);
 
-        string_linked_list_append(sll, part);
+        version_sorting_item_add_piece(vsi, part);
         
         offset = ovector[1];
         flags |= PCRE_NOTBOL;
@@ -73,74 +134,66 @@ parse_version_word(StringLinkedList *sll)
     free(ovector);
 }
 
-static void
-create_normalized_version(StringLinkedList *sll, const int widest_len)
+void
+create_normalized_version(VersionSortingItem *vsi, const int widest_len)
 {
-    StringLinkedListNode *cur;    
-    int str_len, pos, i;
+    VersionPiece *cur;    
+    int pos, i;
     
-    char *result = malloc(((sll->len * widest_len) + 1) * sizeof(char));
+    char *result = malloc(((vsi->node_len * widest_len) + 1) * sizeof(char));
     if (result == NULL) {
         DIE("ERROR: Unable to allocate memory")
     }
     result[0] = '\0';
     pos = 0;
     
-    for (cur = sll->head; cur; cur = cur->next) {
-        str_len = strlen(cur->str);
-        if (str_len < widest_len) {
-            for (i = 0; i < widest_len - str_len; i++) {
+    for (cur = vsi->head; cur; cur = cur->next) {
+        if (cur->len < widest_len) {
+            for (i = 0; i < widest_len - cur->len; i++) {
                 result[pos] = ' ';
                 pos++;
                 result[pos] = '\0';
             }
         }
         strcat(result, cur->str);
-        pos += str_len;
+        pos += cur->len;
     }
-    sll->normalized = result;
-    sll->widest_len = widest_len;
+    vsi->normalized = result;
+    vsi->widest_len = widest_len;
 }
 
-static int
+int
 compare_by_version(const void *a, const void *b)
 {
-    return strcmp((*(const SortingItem **)a)->sll->normalized, (*(const SortingItem **)b)->sll->normalized);
+    return strcmp((*(const VersionSortingItem **)a)->normalized, (*(const VersionSortingItem **)b)->normalized);
 }
 
 void
 version_sorter_sort(char **list, size_t list_len)
 {
-    int i;
-    StringLinkedList *sll;
-    static int longest_string_len = 0;
-    SortingItem **sorting_list = calloc(list_len, sizeof(SortingItem *));
-    SortingItem *sorting_item;
+    int i, widest_len = 0;
+    VersionSortingItem *vsi;
+    VersionSortingItem **sorting_list = calloc(list_len, sizeof(VersionSortingItem *));
 
     for (i = 0; i < list_len; i++) {
-        sll = string_linked_list_init(list[i]);
-        parse_version_word(sll);
-        if (sll->widest_len > longest_string_len) {
-            longest_string_len = sll->widest_len;
+        vsi = version_sorting_item_init(list[i]);
+        if (vsi->widest_len > widest_len) {
+            widest_len = vsi->widest_len;
         }
-        sorting_item = malloc(sizeof(SortingItem));
-        sorting_item->sll = sll;
-        sorting_item->original_index = i;
-        sorting_list[i] = sorting_item;
+        sorting_list[i] = vsi;
     }
     
     for (i = 0; i < list_len; i++) {
-        create_normalized_version(sorting_list[i]->sll, longest_string_len);
+        create_normalized_version(sorting_list[i], widest_len);
     }
 
-    qsort((void *) sorting_list, list_len, sizeof(SortingItem *), &compare_by_version);
+    qsort((void *) sorting_list, list_len, sizeof(VersionSortingItem *), &compare_by_version);
     
     for (i = 0; i < list_len; i++) {
-        sorting_item = sorting_list[i];
-        list[i] = (char *) sorting_item->sll->original;
+        vsi = sorting_list[i];
+        list[i] = (char *) vsi->original;
         
-        string_linked_list_free(sorting_item->sll);
-        free(sorting_item);
+        free(vsi);
     }
     free(sorting_list);
 }

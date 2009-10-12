@@ -10,12 +10,25 @@
 #ifndef _VERSION_SORTER_H
 #define _VERSION_SORTER_H
 
-#define WORD_MAX_LEN 100
+#define DIE(msg) \
+    fprintf(stderr, msg);\
+    exit(EXIT_FAILURE);\
 
-typedef struct _SortingItem {
-    int original_index;
-    StringLinkedList *sll;
-} SortingItem;
+typedef struct _VersionSortingItem {
+    struct _VersionPiece *head;
+    struct _VersionPiece *tail;
+    int node_len;
+    int widest_len;
+    char *normalized;
+    const char *original;
+    size_t original_len;
+} VersionSortingItem;
+
+typedef struct _VersionPiece {
+    char *str;
+    int len;
+    struct _VersionPiece *next;
+} VersionPiece;
 
 extern void version_sorter_sort(char **, size_t);
 
