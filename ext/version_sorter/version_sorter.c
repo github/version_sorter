@@ -15,8 +15,6 @@
 #include <ruby.h>
 #include "version_sorter.h"
 
-#define static
-
 static pcre *expr;
 static VALUE rb_version_sorter_module;
 
@@ -58,6 +56,7 @@ version_sorting_item_init(const char *original)
     vsi->widest_len = 0;
     vsi->original = original;
     vsi->original_len = strlen(original);
+	vsi->normalized = NULL;
     parse_version_word(vsi);
     
     return vsi;
@@ -69,10 +68,12 @@ version_sorting_item_free(VersionSortingItem *vsi)
     VersionPiece *cur;
     while (cur = vsi->head) {
         vsi->head = cur->next;
-        free(cur->str);
+		free(cur->str);
         free(cur);
     }
-    free(vsi->normalized);
+	if (vsi->normalized != NULL) {
+		free(vsi->normalized);
+	}
     free(vsi);
 }
 
@@ -199,7 +200,7 @@ version_sorter_sort(char **list, size_t list_len)
         vsi = sorting_list[i];
         list[i] = (char *) vsi->original;
         
-        free(vsi);
+		version_sorting_item_free(vsi);
     }
     free(sorting_list);
 }

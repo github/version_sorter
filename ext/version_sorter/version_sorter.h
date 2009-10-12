@@ -10,6 +10,16 @@
 #ifndef _VERSION_SORTER_H
 #define _VERSION_SORTER_H
 
+#define UNIT_TESTING 0
+
+#if UNIT_TESTING
+#define static
+#include <stdarg.h>
+#include <stddef.h>
+#include <setjmp.h>
+#include "cmockery.h"
+#endif
+
 #define DIE(msg) \
     fprintf(stderr, msg);\
     exit(EXIT_FAILURE);\
