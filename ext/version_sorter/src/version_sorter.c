@@ -14,14 +14,11 @@
 #include <pcre.h>
 #include "strings.h"
 #include "utils.h"
-#include "hash.h"
 #include "version_sorter.h"
 
 #define static
 
 static pcre *expr;
-static HashTable *ht;
-static int longest_string_len;
 
 static void
 setup_version_regex(void)
@@ -37,7 +34,7 @@ setup_version_regex(void)
 }
 
 static void
-parse_version_word(char *word, StringLinkedList *sll)
+parse_version_word(StringLinkedList *sll)
 {
     if (expr == NULL) {
         setup_version_regex();
@@ -58,14 +55,14 @@ parse_version_word(char *word, StringLinkedList *sll)
     int flags = 0;
     char *part;
 
-    while (0 < pcre_exec(expr, 0, word, strlen(word), offset, flags, ovector, ovecsize)) {
+    while (0 < pcre_exec(expr, 0, sll->original, strlen(sll->original), offset, flags, ovector, ovecsize)) {
         
         part = malloc((WORD_MAX_LEN+1) * sizeof(char));
         if (part == NULL) {
             DIE("ERROR: Not enough memory to allocate word")
         }
 
-        snprintf(part, WORD_MAX_LEN+1, "%.*s", ovector[1]-ovector[0], word+ovector[0]);
+        snprintf(part, WORD_MAX_LEN+1, "%.*s", ovector[1]-ovector[0], sll->original+ovector[0]);
 
         string_linked_list_append(sll, part);
         
@@ -77,29 +74,12 @@ parse_version_word(char *word, StringLinkedList *sll)
 }
 
 static void
-foreach_longest_string_callback(const char *key, void *item, void *state)
+create_normalized_version(StringLinkedList *sll, const int widest_len)
 {
-    StringLinkedList *sll = (StringLinkedList *) item;
-    StringLinkedListNode *cur;
-    int str_len;
-    
-    cur = sll->head;
-    while (cur) {
-        str_len = strlen(cur->str);
-        if (str_len > longest_string_len) {
-            longest_string_len = str_len;
-        }
-        cur = cur->next;
-    }
-}
-
-static char *
-create_flattened_version(StringLinkedList *sll, int longest_string_len)
-{
-    StringLinkedListNode *cur;
+    StringLinkedListNode *cur;    
     int str_len, pos, i;
     
-    char *result = malloc(((sll->len * longest_string_len) + 1) * sizeof(char));
+    char *result = malloc(((sll->len * widest_len) + 1) * sizeof(char));
     if (result == NULL) {
         DIE("ERROR: Unable to allocate memory")
     }
@@ -108,8 +88,8 @@ create_flattened_version(StringLinkedList *sll, int longest_string_len)
     
     for (cur = sll->head; cur; cur = cur->next) {
         str_len = strlen(cur->str);
-        if (str_len < longest_string_len) {
-            for (i = 0; i < longest_string_len - str_len; i++) {
+        if (str_len < widest_len) {
+            for (i = 0; i < widest_len - str_len; i++) {
                 result[pos] = ' ';
                 pos++;
                 result[pos] = '\0';
@@ -118,26 +98,14 @@ create_flattened_version(StringLinkedList *sll, int longest_string_len)
         strcat(result, cur->str);
         pos += str_len;
     }
-    
-    return result;
+    sll->normalized = result;
+    sll->widest_len = widest_len;
 }
 
 static int
 compare_by_version(const void *a, const void *b)
 {
-    int result;
-    
-    const char **ia = (const char **)a;
-    const char **ib = (const char **)b;
-    StringLinkedList *a_sll = (StringLinkedList *) hash_get(ht, *ia);
-    StringLinkedList *b_sll = (StringLinkedList *) hash_get(ht, *ib);
-    const char *flat_a = create_flattened_version(a_sll, longest_string_len);
-    const char *flat_b = create_flattened_version(b_sll, longest_string_len);
-    
-    result = strcmp(flat_a, flat_b);
-    free((void *)flat_a);
-    free((void *)flat_b);
-    return result;
+    return strcmp((*(const SortingItem **)a)->sll->normalized, (*(const SortingItem **)b)->sll->normalized);
 }
 
 void
@@ -145,16 +113,34 @@ version_sorter_sort(char **list, size_t list_len)
 {
     int i;
     StringLinkedList *sll;
-    ht = hash_init(list_len);
+    static int longest_string_len = 0;
+    SortingItem **sorting_list = calloc(list_len, sizeof(SortingItem *));
+    SortingItem *sorting_item;
 
     for (i = 0; i < list_len; i++) {
-        sll = string_linked_list_init();
-        parse_version_word(list[i], sll);
-        hash_put(ht, list[i], (void *) sll);
+        sll = string_linked_list_init(list[i]);
+        parse_version_word(sll);
+        if (sll->widest_len > longest_string_len) {
+            longest_string_len = sll->widest_len;
+        }
+        sorting_item = malloc(sizeof(SortingItem));
+        sorting_item->sll = sll;
+        sorting_item->original_index = i;
+        sorting_list[i] = sorting_item;
     }
     
-    longest_string_len = 0;
-    hash_foreach(ht, &foreach_longest_string_callback, NULL);
+    for (i = 0; i < list_len; i++) {
+        create_normalized_version(sorting_list[i]->sll, longest_string_len);
+    }
 
-    qsort((void *) list, list_len, sizeof(char *), &compare_by_version);
+    qsort((void *) sorting_list, list_len, sizeof(SortingItem *), &compare_by_version);
+    
+    for (i = 0; i < list_len; i++) {
+        sorting_item = sorting_list[i];
+        list[i] = (char *) sorting_item->sll->original;
+        
+        string_linked_list_free(sorting_item->sll);
+        free(sorting_item);
+    }
+    free(sorting_list);
 }

@@ -12,6 +12,11 @@
 
 #define WORD_MAX_LEN 100
 
+typedef struct _SortingItem {
+    int original_index;
+    StringLinkedList *sll;
+} SortingItem;
+
 extern void version_sorter_sort(char **, size_t);
 
 #endif /* _VERSION_SORTER_H */

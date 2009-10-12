@@ -14,16 +14,19 @@ typedef struct _StringLinkedList {
     struct _StringLinkedListNode *head;
     struct _StringLinkedListNode *tail;
     int len;
+    int widest_len;
+    char *normalized;
+    const char *original;
 } StringLinkedList;
 
 typedef struct _StringLinkedListNode {
     char *str;
-    struct _StringLinkedListNode *next;
+    int len;    struct _StringLinkedListNode *next;
 } StringLinkedListNode;
 
 extern int string_cmp(const void *, const void *);
 
-extern StringLinkedList * string_linked_list_init(void);
+extern StringLinkedList * string_linked_list_init(const char *);
 extern void string_linked_list_free(StringLinkedList *);
 extern void string_linked_list_append(StringLinkedList *, char *);
 

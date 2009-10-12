@@ -19,7 +19,7 @@ string_cmp(const void *a, const void *b)
 }
 
 StringLinkedList *
-string_linked_list_init(void)
+string_linked_list_init(const char *original)
 {
     StringLinkedList *sll = malloc(sizeof(StringLinkedList));
     if (sll == NULL) {
@@ -28,6 +28,9 @@ string_linked_list_init(void)
     sll->head = NULL;
     sll->tail = NULL;
     sll->len = 0;
+    sll->widest_len = 0;
+    sll->normalized = NULL;
+    sll->original = original;
     
     return sll;
 }
@@ -41,6 +44,9 @@ string_linked_list_free(StringLinkedList *sll)
         free(cur->str);
         free(cur);
     }
+    if (sll->normalized != NULL) {
+        free(sll->normalized);
+    }
     free(sll);
 }
 
@@ -52,6 +58,7 @@ string_linked_list_append(StringLinkedList *sll, char *str)
         DIE("ERROR: Not enough memory to allocate string linked list node")
     }
     slln->str = str;
+    slln->len = strlen(str);
     slln->next = NULL;
     
     if (sll->head == NULL) {
@@ -62,4 +69,7 @@ string_linked_list_append(StringLinkedList *sll, char *str)
         sll->tail = slln;
     }
     sll->len++;
+    if (slln->len > sll->widest_len) {
+        sll->widest_len = slln->len;
+    }
 }

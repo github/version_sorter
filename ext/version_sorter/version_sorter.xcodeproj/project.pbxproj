@@ -15,19 +15,13 @@
 		F026A408108184440053BAF6 /* strings.c in Sources */ = {isa = PBXBuildFile; fileRef = F026A404108184440053BAF6 /* strings.c */; };
 		F055BA4010814568005E572C /* utils.h in Headers */ = {isa = PBXBuildFile; fileRef = F055BA3F10814568005E572C /* utils.h */; };
 		F055BA4110814568005E572C /* utils.h in Headers */ = {isa = PBXBuildFile; fileRef = F055BA3F10814568005E572C /* utils.h */; };
-		F055BA7D108155F1005E572C /* hash_test.c in Sources */ = {isa = PBXBuildFile; fileRef = F055BA7B108155F1005E572C /* hash_test.c */; };
-		F055BA8A10816493005E572C /* hash_test.h in Headers */ = {isa = PBXBuildFile; fileRef = F055BA8910816493005E572C /* hash_test.h */; };
 		F08A592710818CAF00C347D9 /* libpcre.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = F08A592610818CAF00C347D9 /* libpcre.dylib */; };
 		F08A592910818CCF00C347D9 /* pcre.h in Headers */ = {isa = PBXBuildFile; fileRef = F08A592810818CCF00C347D9 /* pcre.h */; };
 		F08A592A10818CCF00C347D9 /* pcre.h in Headers */ = {isa = PBXBuildFile; fileRef = F08A592810818CCF00C347D9 /* pcre.h */; };
 		F08A592B10818CD600C347D9 /* libpcre.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = F08A592610818CAF00C347D9 /* libpcre.dylib */; };
 		F0DA6F0910811D8C00DD2197 /* libcmockery.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = F0DA6F0810811D8C00DD2197 /* libcmockery.dylib */; };
-		F0DA97D210812E1600168380 /* hash.c in Sources */ = {isa = PBXBuildFile; fileRef = F0DA97CE10812E1600168380 /* hash.c */; };
-		F0DA97D310812E1600168380 /* hash.h in Headers */ = {isa = PBXBuildFile; fileRef = F0DA97CF10812E1600168380 /* hash.h */; };
 		F0DA97D410812E1600168380 /* version_sorter.c in Sources */ = {isa = PBXBuildFile; fileRef = F0DA97D010812E1600168380 /* version_sorter.c */; };
 		F0DA97D510812E1600168380 /* version_sorter.h in Headers */ = {isa = PBXBuildFile; fileRef = F0DA97D110812E1600168380 /* version_sorter.h */; };
-		F0DA97D610812E1600168380 /* hash.c in Sources */ = {isa = PBXBuildFile; fileRef = F0DA97CE10812E1600168380 /* hash.c */; };
-		F0DA97D710812E1600168380 /* hash.h in Headers */ = {isa = PBXBuildFile; fileRef = F0DA97CF10812E1600168380 /* hash.h */; };
 		F0DA97D810812E1600168380 /* version_sorter.c in Sources */ = {isa = PBXBuildFile; fileRef = F0DA97D010812E1600168380 /* version_sorter.c */; };
 		F0DA97D910812E1600168380 /* version_sorter.h in Headers */ = {isa = PBXBuildFile; fileRef = F0DA97D110812E1600168380 /* version_sorter.h */; };
 /* End PBXBuildFile section */
@@ -39,14 +33,10 @@
 		F026A403108184440053BAF6 /* strings.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = strings.h; path = src/strings.h; sourceTree = "<group>"; };
 		F026A404108184440053BAF6 /* strings.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = strings.c; path = src/strings.c; sourceTree = "<group>"; };
 		F055BA3F10814568005E572C /* utils.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = utils.h; path = src/utils.h; sourceTree = "<group>"; };
-		F055BA7B108155F1005E572C /* hash_test.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = hash_test.c; sourceTree = "<group>"; };
-		F055BA8910816493005E572C /* hash_test.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = hash_test.h; sourceTree = "<group>"; };
 		F08A592610818CAF00C347D9 /* libpcre.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libpcre.dylib; path = /opt/local/lib/libpcre.dylib; sourceTree = "<absolute>"; };
 		F08A592810818CCF00C347D9 /* pcre.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = pcre.h; path = /opt/local/include/pcre.h; sourceTree = "<absolute>"; };
 		F0DA6E3D1080CD0200DD2197 /* version_sorter_test */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = version_sorter_test; sourceTree = BUILT_PRODUCTS_DIR; };
 		F0DA6F0810811D8C00DD2197 /* libcmockery.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libcmockery.dylib; path = /opt/local/lib/libcmockery.dylib; sourceTree = "<absolute>"; };
-		F0DA97CE10812E1600168380 /* hash.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = hash.c; path = src/hash.c; sourceTree = "<group>"; };
-		F0DA97CF10812E1600168380 /* hash.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = hash.h; path = src/hash.h; sourceTree = "<group>"; };
 		F0DA97D010812E1600168380 /* version_sorter.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = version_sorter.c; path = src/version_sorter.c; sourceTree = "<group>"; };
 		F0DA97D110812E1600168380 /* version_sorter.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = version_sorter.h; path = src/version_sorter.h; sourceTree = "<group>"; };
 /* End PBXFileReference section */
@@ -96,8 +86,6 @@
 			children = (
 				F011500510812EA000F0E0BF /* cmockery.h */,
 				F011500310812E4D00F0E0BF /* main.c */,
-				F055BA7B108155F1005E572C /* hash_test.c */,
-				F055BA8910816493005E572C /* hash_test.h */,
 			);
 			name = Test;
 			path = src/test;
@@ -116,8 +104,6 @@
 			isa = PBXGroup;
 			children = (
 				F011500210812E4D00F0E0BF /* Test */,
-				F0DA97CE10812E1600168380 /* hash.c */,
-				F0DA97CF10812E1600168380 /* hash.h */,
 				F08A592810818CCF00C347D9 /* pcre.h */,
 				F026A403108184440053BAF6 /* strings.h */,
 				F026A404108184440053BAF6 /* strings.c */,
@@ -135,7 +121,6 @@
 			isa = PBXHeadersBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				F0DA97D710812E1600168380 /* hash.h in Headers */,
 				F0DA97D910812E1600168380 /* version_sorter.h in Headers */,
 				F055BA4110814568005E572C /* utils.h in Headers */,
 				F026A407108184440053BAF6 /* strings.h in Headers */,
@@ -147,11 +132,9 @@
 			isa = PBXHeadersBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				F0DA97D310812E1600168380 /* hash.h in Headers */,
 				F0DA97D510812E1600168380 /* version_sorter.h in Headers */,
 				F011500610812EA000F0E0BF /* cmockery.h in Headers */,
 				F055BA4010814568005E572C /* utils.h in Headers */,
-				F055BA8A10816493005E572C /* hash_test.h in Headers */,
 				F026A405108184440053BAF6 /* strings.h in Headers */,
 				F08A592910818CCF00C347D9 /* pcre.h in Headers */,
 			);
@@ -217,7 +200,6 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				F0DA97D610812E1600168380 /* hash.c in Sources */,
 				F0DA97D810812E1600168380 /* version_sorter.c in Sources */,
 				F026A408108184440053BAF6 /* strings.c in Sources */,
 			);
@@ -227,10 +209,8 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				F0DA97D210812E1600168380 /* hash.c in Sources */,
 				F0DA97D410812E1600168380 /* version_sorter.c in Sources */,
 				F011500410812E4D00F0E0BF /* main.c in Sources */,
-				F055BA7D108155F1005E572C /* hash_test.c in Sources */,
 				F026A406108184440053BAF6 /* strings.c in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

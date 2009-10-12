@@ -20,12 +20,11 @@
 #include <sys/times.h>
 #include "utils.h"
 #include "strings.h"
-#include "hash_test.h"
 #include "version_sorter.h"
 
-extern void parse_version_word(char *, StringLinkedList *);
+extern void parse_version_word(StringLinkedList *);
 extern void setup_version_regex(void);
-extern char * create_flattened_version(StringLinkedList *, int);
+extern void create_normalized_version(StringLinkedList *, int);
 
 static char *unsorted[] = {
     "1.0.9",        "1.0.10",       "1.10.1",
@@ -61,9 +60,9 @@ test_sort(void **state)
 void
 test_parse_version_word(void **state)
 {
-    StringLinkedList *sll = string_linked_list_init();
+    StringLinkedList *sll = string_linked_list_init("1.0.10a");
 
-    parse_version_word("1.0.10a", sll);
+    parse_version_word(sll);
     
     assert((strcmp("1", sll->head->str)) == 0);
     assert((strcmp("0", sll->head->next->str)) == 0);
@@ -74,16 +73,15 @@ test_parse_version_word(void **state)
 }
 
 void
-test_version_flatten(void **state)
+test_create_normalized_version(void **state)
 {
-    StringLinkedList *sll = string_linked_list_init();
-    
-    parse_version_word("1.0.10a", sll);
-    char *flat = create_flattened_version(sll, 2);
-    
-    assert((strcmp(" 1 010 a", flat)) == 0);
-    
-    free(flat);
+    StringLinkedList *sll = string_linked_list_init("1.0.10a");
+
+    parse_version_word(sll);
+    create_normalized_version(sll, 2);
+
+    assert((strcmp(" 1 010 a", sll->normalized)) == 0);
+
     string_linked_list_free(sll);
 }
 
@@ -111,11 +109,9 @@ int
 main(void)
 {    
     const UnitTest tests[] = {
-        unit_test(test_hashtable),
         unit_test(test_array_length),
-        unit_test(test_sort),
         unit_test(test_parse_version_word),
-        unit_test(test_version_flatten),
+        unit_test(test_sort),
         unit_test(benchmark_sort),
     };
     return run_tests(tests);
