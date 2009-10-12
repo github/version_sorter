@@ -1,5 +1,5 @@
 require 'test/unit'
-require 'ext/version_sorter'
+require 'version_sorter'
 
 class VersionSorterTest < Test::Unit::TestCase
   include VersionSorter
@@ -20,7 +20,7 @@ class VersionSorterTest < Test::Unit::TestCase
 end
 
 require 'benchmark'
-versions = IO.read('tags.txt').split("\n")
+versions = IO.read(File.dirname(__FILE__) + '/tags.txt').split("\n")
 count = 10
 Benchmark.bm(20) do |x|
   x.report("sort")             { count.times { VersionSorter.sort(versions) } }
