@@ -10,7 +10,7 @@
 #include <stdarg.h>
 #include <stddef.h>
 #include <setjmp.h>
-#include "cmockery.h"
+#include <cmockery.h>
 
 #include <assert.h>
 #include <stdio.h>

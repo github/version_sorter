@@ -7,30 +7,40 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
-		70D1A11C1083E7E3004A83F6 /* main.c in Sources */ = {isa = PBXBuildFile; fileRef = 70D1A1191083E7E3004A83F6 /* main.c */; };
-		70D1A11D1083E7E3004A83F6 /* version_sorter.c in Sources */ = {isa = PBXBuildFile; fileRef = 70D1A11A1083E7E3004A83F6 /* version_sorter.c */; };
-		70D1A11E1083E7E3004A83F6 /* version_sorter.h in Headers */ = {isa = PBXBuildFile; fileRef = 70D1A11B1083E7E3004A83F6 /* version_sorter.h */; };
-		70D1A1201083E80C004A83F6 /* pcre.h in Headers */ = {isa = PBXBuildFile; fileRef = 70D1A11F1083E80C004A83F6 /* pcre.h */; };
-		70D1A1221083E822004A83F6 /* cmockery.h in Headers */ = {isa = PBXBuildFile; fileRef = 70D1A1211083E822004A83F6 /* cmockery.h */; };
-		70D1A12B1083E86A004A83F6 /* libpcre.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 70D1A12A1083E86A004A83F6 /* libpcre.dylib */; };
-		70D1A12E1083E89E004A83F6 /* libprofiler.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 70D1A12D1083E89E004A83F6 /* libprofiler.dylib */; };
-		70D1A1301083E8B9004A83F6 /* libcmockery.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 70D1A12F1083E8B9004A83F6 /* libcmockery.dylib */; };
-		70D1A1321083E937004A83F6 /* ruby.h in Headers */ = {isa = PBXBuildFile; fileRef = 70D1A1311083E937004A83F6 /* ruby.h */; };
-		70D1A1381083E979004A83F6 /* libruby.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 70D1A1371083E979004A83F6 /* libruby.dylib */; };
+		F0D1F60E108417AD0069A00B /* version_sorter.c in Sources */ = {isa = PBXBuildFile; fileRef = F0D1F60C108417AD0069A00B /* version_sorter.c */; };
+		F0D1F60F108417AD0069A00B /* version_sorter.h in Headers */ = {isa = PBXBuildFile; fileRef = F0D1F60D108417AD0069A00B /* version_sorter.h */; };
+		F0D1F612108417BA0069A00B /* main.c in Sources */ = {isa = PBXBuildFile; fileRef = F0D1F611108417BA0069A00B /* main.c */; };
+		F0D1F61D108418050069A00B /* Ruby.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = F0D1F61C108418050069A00B /* Ruby.framework */; };
+		F0D4D6891084211E00BF287E /* pcre.h in Headers */ = {isa = PBXBuildFile; fileRef = F0D4D6881084211D00BF287E /* pcre.h */; };
+		F0D4D68B1084213A00BF287E /* libpcre.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = F0D4D68A1084213A00BF287E /* libpcre.dylib */; };
+		F0D4D698108421B100BF287E /* cmockery.h in Headers */ = {isa = PBXBuildFile; fileRef = F0D4D697108421B100BF287E /* cmockery.h */; };
+		F0D4D69A108421D300BF287E /* libcmockery.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = F0D4D699108421D300BF287E /* libcmockery.dylib */; };
+		F0D4D6B91084224600BF287E /* rb_version_sorter.c in Sources */ = {isa = PBXBuildFile; fileRef = F0D4D6B81084224600BF287E /* rb_version_sorter.c */; };
 /* End PBXBuildFile section */
 
+/* Begin PBXCopyFilesBuildPhase section */
+		8DD76FAF0486AB0100D96B5E /* CopyFiles */ = {
+			isa = PBXCopyFilesBuildPhase;
+			buildActionMask = 8;
+			dstPath = /usr/share/man/man1/;
+			dstSubfolderSpec = 0;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 1;
+		};
+/* End PBXCopyFilesBuildPhase section */
+
 /* Begin PBXFileReference section */
-		70D1A1191083E7E3004A83F6 /* main.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = main.c; sourceTree = "<group>"; };
-		70D1A11A1083E7E3004A83F6 /* version_sorter.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = version_sorter.c; sourceTree = "<group>"; };
-		70D1A11B1083E7E3004A83F6 /* version_sorter.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = version_sorter.h; sourceTree = "<group>"; };
-		70D1A11F1083E80C004A83F6 /* pcre.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = pcre.h; path = /opt/local/include/pcre.h; sourceTree = "<absolute>"; };
-		70D1A1211083E822004A83F6 /* cmockery.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = cmockery.h; path = /opt/local/include/google/cmockery.h; sourceTree = "<absolute>"; };
-		70D1A12A1083E86A004A83F6 /* libpcre.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libpcre.dylib; path = /opt/local/lib/libpcre.dylib; sourceTree = "<absolute>"; };
-		70D1A12D1083E89E004A83F6 /* libprofiler.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libprofiler.dylib; path = /opt/local/lib/libprofiler.dylib; sourceTree = "<absolute>"; };
-		70D1A12F1083E8B9004A83F6 /* libcmockery.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libcmockery.dylib; path = /opt/local/lib/libcmockery.dylib; sourceTree = "<absolute>"; };
-		70D1A1311083E937004A83F6 /* ruby.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = ruby.h; path = "/opt/local/lib/ruby/1.8/i686-darwin9/ruby.h"; sourceTree = "<absolute>"; };
-		70D1A1371083E979004A83F6 /* libruby.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libruby.dylib; path = /opt/local/lib/libruby.dylib; sourceTree = "<absolute>"; };
 		8DD76FB20486AB0100D96B5E /* version_sorter */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = version_sorter; sourceTree = BUILT_PRODUCTS_DIR; };
+		F0D1F60C108417AD0069A00B /* version_sorter.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = version_sorter.c; sourceTree = "<group>"; };
+		F0D1F60D108417AD0069A00B /* version_sorter.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = version_sorter.h; sourceTree = "<group>"; };
+		F0D1F611108417BA0069A00B /* main.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = main.c; path = test/main.c; sourceTree = "<group>"; };
+		F0D1F61C108418050069A00B /* Ruby.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Ruby.framework; path = /System/Library/Frameworks/Ruby.framework; sourceTree = "<absolute>"; };
+		F0D4D6881084211D00BF287E /* pcre.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = pcre.h; path = /opt/local/include/pcre.h; sourceTree = "<absolute>"; };
+		F0D4D68A1084213A00BF287E /* libpcre.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libpcre.dylib; path = /opt/local/lib/libpcre.dylib; sourceTree = "<absolute>"; };
+		F0D4D697108421B100BF287E /* cmockery.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = cmockery.h; path = /opt/local/include/google/cmockery.h; sourceTree = "<absolute>"; };
+		F0D4D699108421D300BF287E /* libcmockery.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libcmockery.dylib; path = /opt/local/lib/libcmockery.dylib; sourceTree = "<absolute>"; };
+		F0D4D6B81084224600BF287E /* rb_version_sorter.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = rb_version_sorter.c; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -38,10 +48,9 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				70D1A12B1083E86A004A83F6 /* libpcre.dylib in Frameworks */,
-				70D1A12E1083E89E004A83F6 /* libprofiler.dylib in Frameworks */,
-				70D1A1301083E8B9004A83F6 /* libcmockery.dylib in Frameworks */,
-				70D1A1381083E979004A83F6 /* libruby.dylib in Frameworks */,
+				F0D1F61D108418050069A00B /* Ruby.framework in Frameworks */,
+				F0D4D68B1084213A00BF287E /* libpcre.dylib in Frameworks */,
+				F0D4D69A108421D300BF287E /* libcmockery.dylib in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -51,8 +60,8 @@
 		08FB7794FE84155DC02AAC07 /* version_sorter */ = {
 			isa = PBXGroup;
 			children = (
-				70D1A12C1083E87B004A83F6 /* Libs */,
 				08FB7795FE84155DC02AAC07 /* Source */,
+				F0D1F61B108417F90069A00B /* Frameworks */,
 				1AB674ADFE9D54B511CA2CBB /* Products */,
 			);
 			name = version_sorter;
@@ -61,11 +70,10 @@
 		08FB7795FE84155DC02AAC07 /* Source */ = {
 			isa = PBXGroup;
 			children = (
-				70D1A1181083E7E3004A83F6 /* test */,
-				70D1A11A1083E7E3004A83F6 /* version_sorter.c */,
-				70D1A11B1083E7E3004A83F6 /* version_sorter.h */,
-				70D1A1311083E937004A83F6 /* ruby.h */,
-				70D1A11F1083E80C004A83F6 /* pcre.h */,
+				F0D1F611108417BA0069A00B /* main.c */,
+				F0D1F60C108417AD0069A00B /* version_sorter.c */,
+				F0D1F60D108417AD0069A00B /* version_sorter.h */,
+				F0D4D6B81084224600BF287E /* rb_version_sorter.c */,
 			);
 			name = Source;
 			sourceTree = "<group>";
@@ -78,37 +86,28 @@
 			name = Products;
 			sourceTree = "<group>";
 		};
-		70D1A1181083E7E3004A83F6 /* test */ = {
+		F0D1F61B108417F90069A00B /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
-				70D1A1211083E822004A83F6 /* cmockery.h */,
-				70D1A1191083E7E3004A83F6 /* main.c */,
+				F0D4D697108421B100BF287E /* cmockery.h */,
+				F0D4D68A1084213A00BF287E /* libpcre.dylib */,
+				F0D4D6881084211D00BF287E /* pcre.h */,
+				F0D1F61C108418050069A00B /* Ruby.framework */,
+				F0D4D699108421D300BF287E /* libcmockery.dylib */,
 			);
-			path = test;
-			sourceTree = "<group>";
-		};
-		70D1A12C1083E87B004A83F6 /* Libs */ = {
-			isa = PBXGroup;
-			children = (
-				70D1A1371083E979004A83F6 /* libruby.dylib */,
-				70D1A12F1083E8B9004A83F6 /* libcmockery.dylib */,
-				70D1A12D1083E89E004A83F6 /* libprofiler.dylib */,
-				70D1A12A1083E86A004A83F6 /* libpcre.dylib */,
-			);
-			name = Libs;
+			name = Frameworks;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
 
 /* Begin PBXHeadersBuildPhase section */
-		70D1A1171083E7D2004A83F6 /* Headers */ = {
+		F0D1F610108417AD0069A00B /* Headers */ = {
 			isa = PBXHeadersBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				70D1A11E1083E7E3004A83F6 /* version_sorter.h in Headers */,
-				70D1A1201083E80C004A83F6 /* pcre.h in Headers */,
-				70D1A1221083E822004A83F6 /* cmockery.h in Headers */,
-				70D1A1321083E937004A83F6 /* ruby.h in Headers */,
+				F0D1F60F108417AD0069A00B /* version_sorter.h in Headers */,
+				F0D4D6891084211E00BF287E /* pcre.h in Headers */,
+				F0D4D698108421B100BF287E /* cmockery.h in Headers */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -121,7 +120,8 @@
 			buildPhases = (
 				8DD76FAB0486AB0100D96B5E /* Sources */,
 				8DD76FAD0486AB0100D96B5E /* Frameworks */,
-				70D1A1171083E7D2004A83F6 /* Headers */,
+				8DD76FAF0486AB0100D96B5E /* CopyFiles */,
+				F0D1F610108417AD0069A00B /* Headers */,
 			);
 			buildRules = (
 			);
@@ -155,8 +155,9 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				70D1A11C1083E7E3004A83F6 /* main.c in Sources */,
-				70D1A11D1083E7E3004A83F6 /* version_sorter.c in Sources */,
+				F0D1F60E108417AD0069A00B /* version_sorter.c in Sources */,
+				F0D1F612108417BA0069A00B /* main.c in Sources */,
+				F0D4D6B91084224600BF287E /* rb_version_sorter.c in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -168,6 +169,10 @@
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
 				COPY_PHASE_STRIP = NO;
+				FRAMEWORK_SEARCH_PATHS = (
+					"$(inherited)",
+					"\"$(SRCROOT)/frameworks\"",
+				);
 				GCC_DYNAMIC_NO_PIC = NO;
 				GCC_ENABLE_FIX_AND_CONTINUE = YES;
 				GCC_MODEL_TUNING = G5;
@@ -186,6 +191,10 @@
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
 				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				FRAMEWORK_SEARCH_PATHS = (
+					"$(inherited)",
+					"\"$(SRCROOT)/frameworks\"",
+				);
 				GCC_MODEL_TUNING = G5;
 				INSTALL_PATH = /usr/local/bin;
 				LIBRARY_SEARCH_PATHS = (
@@ -199,32 +208,34 @@
 		1DEB928A08733DD80010E9CD /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				ARCHS = "$(ARCHS_STANDARD_32_BIT)";
-				GCC_C_LANGUAGE_STANDARD = c99;
-				GCC_FEEDBACK_DIRECTED_OPTIMIZATION = Off;
-				GCC_INSTRUMENT_PROGRAM_FLOW_ARCS = NO;
+				ARCHS = "$(ARCHS_STANDARD_32_64_BIT)";
+				GCC_C_LANGUAGE_STANDARD = gnu99;
 				GCC_OPTIMIZATION_LEVEL = 0;
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					"XCODE=1",
+					"UNIT_TESTING=1",
+				);
 				GCC_WARN_ABOUT_RETURN_TYPE = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
-				GENERATE_PROFILING_CODE = YES;
 				ONLY_ACTIVE_ARCH = YES;
 				PREBINDING = NO;
-				SDKROOT = macosx10.5;
+				SDKROOT = macosx10.6;
 			};
 			name = Debug;
 		};
 		1DEB928B08733DD80010E9CD /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				ARCHS = "$(ARCHS_STANDARD_32_BIT)";
-				GCC_C_LANGUAGE_STANDARD = c99;
-				GCC_FEEDBACK_DIRECTED_OPTIMIZATION = Off;
-				GCC_INSTRUMENT_PROGRAM_FLOW_ARCS = NO;
+				ARCHS = "$(ARCHS_STANDARD_32_64_BIT)";
+				GCC_C_LANGUAGE_STANDARD = gnu99;
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					"XCODE=1",
+					"UNIT_TESTING=1",
+				);
 				GCC_WARN_ABOUT_RETURN_TYPE = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
-				GENERATE_PROFILING_CODE = YES;
 				PREBINDING = NO;
-				SDKROOT = macosx10.5;
+				SDKROOT = macosx10.6;
 			};
 			name = Release;
 		};
