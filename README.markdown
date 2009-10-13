@@ -9,3 +9,10 @@ By pope.
     VersionSorter.sort(versions)  # => ["1.0.3", "1.0.9", "1.0.10", "2.0"]
 
 <http://github.com/blog/521-speedy-version-sorting>
+
+Install
+-------
+
+## [Gemcutter](http://gemcutter.org)
+
+    $ gem install version_sorter
