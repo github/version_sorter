@@ -7,14 +7,12 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		F03D879B1084363500CD53F4 /* cmockery.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = F03D879A1084363500CD53F4 /* cmockery.framework */; };
+		F03D879E1084364500CD53F4 /* cmockery.framework in Copy Frameworks */ = {isa = PBXBuildFile; fileRef = F03D879A1084363500CD53F4 /* cmockery.framework */; };
 		F0D1F60E108417AD0069A00B /* version_sorter.c in Sources */ = {isa = PBXBuildFile; fileRef = F0D1F60C108417AD0069A00B /* version_sorter.c */; };
 		F0D1F60F108417AD0069A00B /* version_sorter.h in Headers */ = {isa = PBXBuildFile; fileRef = F0D1F60D108417AD0069A00B /* version_sorter.h */; };
 		F0D1F612108417BA0069A00B /* main.c in Sources */ = {isa = PBXBuildFile; fileRef = F0D1F611108417BA0069A00B /* main.c */; };
 		F0D1F61D108418050069A00B /* Ruby.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = F0D1F61C108418050069A00B /* Ruby.framework */; };
-		F0D4D6891084211E00BF287E /* pcre.h in Headers */ = {isa = PBXBuildFile; fileRef = F0D4D6881084211D00BF287E /* pcre.h */; };
-		F0D4D68B1084213A00BF287E /* libpcre.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = F0D4D68A1084213A00BF287E /* libpcre.dylib */; };
-		F0D4D698108421B100BF287E /* cmockery.h in Headers */ = {isa = PBXBuildFile; fileRef = F0D4D697108421B100BF287E /* cmockery.h */; };
-		F0D4D69A108421D300BF287E /* libcmockery.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = F0D4D699108421D300BF287E /* libcmockery.dylib */; };
 		F0D4D6B91084224600BF287E /* rb_version_sorter.c in Sources */ = {isa = PBXBuildFile; fileRef = F0D4D6B81084224600BF287E /* rb_version_sorter.c */; };
 /* End PBXBuildFile section */
 
@@ -28,18 +26,26 @@
 			);
 			runOnlyForDeploymentPostprocessing = 1;
 		};
+		F03D876E108435B500CD53F4 /* Copy Frameworks */ = {
+			isa = PBXCopyFilesBuildPhase;
+			buildActionMask = 2147483647;
+			dstPath = "";
+			dstSubfolderSpec = 10;
+			files = (
+				F03D879E1084364500CD53F4 /* cmockery.framework in Copy Frameworks */,
+			);
+			name = "Copy Frameworks";
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 /* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
 		8DD76FB20486AB0100D96B5E /* version_sorter */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = version_sorter; sourceTree = BUILT_PRODUCTS_DIR; };
+		F03D879A1084363500CD53F4 /* cmockery.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = cmockery.framework; path = frameworks/cmockery.framework; sourceTree = "<group>"; };
 		F0D1F60C108417AD0069A00B /* version_sorter.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = version_sorter.c; sourceTree = "<group>"; };
 		F0D1F60D108417AD0069A00B /* version_sorter.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = version_sorter.h; sourceTree = "<group>"; };
 		F0D1F611108417BA0069A00B /* main.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = main.c; path = test/main.c; sourceTree = "<group>"; };
 		F0D1F61C108418050069A00B /* Ruby.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Ruby.framework; path = /System/Library/Frameworks/Ruby.framework; sourceTree = "<absolute>"; };
-		F0D4D6881084211D00BF287E /* pcre.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = pcre.h; path = /opt/local/include/pcre.h; sourceTree = "<absolute>"; };
-		F0D4D68A1084213A00BF287E /* libpcre.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libpcre.dylib; path = /opt/local/lib/libpcre.dylib; sourceTree = "<absolute>"; };
-		F0D4D697108421B100BF287E /* cmockery.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = cmockery.h; path = /opt/local/include/google/cmockery.h; sourceTree = "<absolute>"; };
-		F0D4D699108421D300BF287E /* libcmockery.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libcmockery.dylib; path = /opt/local/lib/libcmockery.dylib; sourceTree = "<absolute>"; };
 		F0D4D6B81084224600BF287E /* rb_version_sorter.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = rb_version_sorter.c; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
@@ -49,8 +55,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				F0D1F61D108418050069A00B /* Ruby.framework in Frameworks */,
-				F0D4D68B1084213A00BF287E /* libpcre.dylib in Frameworks */,
-				F0D4D69A108421D300BF287E /* libcmockery.dylib in Frameworks */,
+				F03D879B1084363500CD53F4 /* cmockery.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -89,11 +94,8 @@
 		F0D1F61B108417F90069A00B /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
-				F0D4D697108421B100BF287E /* cmockery.h */,
-				F0D4D68A1084213A00BF287E /* libpcre.dylib */,
-				F0D4D6881084211D00BF287E /* pcre.h */,
 				F0D1F61C108418050069A00B /* Ruby.framework */,
-				F0D4D699108421D300BF287E /* libcmockery.dylib */,
+				F03D879A1084363500CD53F4 /* cmockery.framework */,
 			);
 			name = Frameworks;
 			sourceTree = "<group>";
@@ -106,8 +108,6 @@
 			buildActionMask = 2147483647;
 			files = (
 				F0D1F60F108417AD0069A00B /* version_sorter.h in Headers */,
-				F0D4D6891084211E00BF287E /* pcre.h in Headers */,
-				F0D4D698108421B100BF287E /* cmockery.h in Headers */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -122,6 +122,7 @@
 				8DD76FAD0486AB0100D96B5E /* Frameworks */,
 				8DD76FAF0486AB0100D96B5E /* CopyFiles */,
 				F0D1F610108417AD0069A00B /* Headers */,
+				F03D876E108435B500CD53F4 /* Copy Frameworks */,
 			);
 			buildRules = (
 			);
@@ -172,6 +173,7 @@
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(inherited)",
 					"\"$(SRCROOT)/frameworks\"",
+					"\"$(SRCROOT)/Frameworks\"",
 				);
 				GCC_DYNAMIC_NO_PIC = NO;
 				GCC_ENABLE_FIX_AND_CONTINUE = YES;
@@ -194,6 +196,7 @@
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(inherited)",
 					"\"$(SRCROOT)/frameworks\"",
+					"\"$(SRCROOT)/Frameworks\"",
 				);
 				GCC_MODEL_TUNING = G5;
 				INSTALL_PATH = /usr/local/bin;
