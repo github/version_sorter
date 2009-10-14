@@ -147,15 +147,26 @@ create_normalized_version(VersionSortingItem *vsi, const int widest_len)
     pos = 0;
     
     for (cur = vsi->head; cur; cur = cur->next) {
-        if (cur->len < widest_len) {
+        
+        /* Left-Pad digits with a space */
+        if (cur->len < widest_len && isdigit(cur->str[0])) {
             for (i = 0; i < widest_len - cur->len; i++) {
                 result[pos] = ' ';
                 pos++;
-                result[pos] = '\0';
             }
+            result[pos] = '\0';
         }
         strcat(result, cur->str);
         pos += cur->len;
+
+        /* Right-Pad words with a space */
+        if (cur->len < widest_len && isalpha(cur->str[0])) {
+            for (i = 0; i < widest_len - cur->len; i++) {
+                result[pos] = ' ';
+                pos++;
+            }
+            result[pos] = '\0';
+        }
     }
     vsi->normalized = result;
     vsi->widest_len = widest_len;
