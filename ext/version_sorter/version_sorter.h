@@ -38,6 +38,10 @@ typedef struct _VersionPiece {
     struct _VersionPiece *next;
 } VersionPiece;
 
+enum scan_state {
+    digit, alpha, other
+};
+
 extern void version_sorter_sort(char **, size_t);
 
 #endif /* _VERSION_SORTER_H */

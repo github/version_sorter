@@ -11,32 +11,17 @@
 #include <stdio.h>
 #include <string.h>
 #include <ctype.h>
-#include <pcre.h>
 #include "version_sorter.h"
 
-static pcre *expr;
 
 static VersionSortingItem * version_sorting_item_init(const char *);
 static void version_sorting_item_free(VersionSortingItem *);
 static void version_sorting_item_add_piece(VersionSortingItem *, char *);
-static void setup_version_regex(void);
 static void parse_version_word(VersionSortingItem *);
 static void create_normalized_version(VersionSortingItem *, const int);
 static int compare_by_version(const void *, const void *);
+static enum scan_state scan_state_get(const char);
 
-
-void
-setup_version_regex(void)
-{
-    const char *pattern = "(\\d+|[a-zA-Z]+)";
-    const char *errstr;
-    int erroffset;
-    
-    if (!(expr = pcre_compile(pattern, 0, &errstr, &erroffset, 0))) {
-        fprintf(stderr, "ERROR: %s: %s\n", pattern, errstr);
-        exit(EXIT_FAILURE);
-    }    
-}
 
 VersionSortingItem *
 version_sorting_item_init(const char *original)
@@ -96,48 +81,56 @@ version_sorting_item_add_piece(VersionSortingItem *vsi, char *str)
     }
 }
 
+enum scan_state
+scan_state_get(const char c)
+{
+    if (isdigit(c)) {
+        return digit;
+    } else if (isalpha(c)) {
+        return alpha;
+    } else {
+        return other;
+    }
+
+}
+
 void
 parse_version_word(VersionSortingItem *vsi)
 {
-    if (expr == NULL) {
-        setup_version_regex();
-    }
-    
-    int ovecsize = 0;
-    if (pcre_fullinfo(expr, NULL, PCRE_INFO_CAPTURECOUNT, &ovecsize) != 0) {
-        DIE("ERROR: Problem calling pcre_fullinfo")
-    }
-    ovecsize = (ovecsize + 1) * 3;
-    
-    int *ovector = calloc(ovecsize, sizeof(int));
-    if (ovector == NULL) {
-        DIE("ERROR: Not enough memory to allocate ovector")
-    }
-
-    int offset = 0;
-    int flags = 0;
+    int start = 0, end = 0, size = 0;
+    char current_char, next_char;
     char *part;
-    int size;
-
-    while (0 < pcre_exec(expr, 0, vsi->original, vsi->original_len, offset, flags, ovector, ovecsize)) {
+    enum scan_state current_state, next_state;
+    
+    while ((current_char = vsi->original[start]) != '\0') {
+        current_state = scan_state_get(current_char);
         
-        size = ovector[1] - ovector[0];
+        if (current_state == other) {
+            start++;
+            end = start;
+            continue;
+        }
+        
+        do {
+            end++;
+            next_char = vsi->original[end];
+            next_state = scan_state_get(next_char);
+        } while (next_char != '\0' && current_state == next_state);
 
+        size = end - start;
+        
         part = malloc((size+1) * sizeof(char));
         if (part == NULL) {
             DIE("ERROR: Not enough memory to allocate word")
         }
-
-        memcpy(part, vsi->original+ovector[0], size);
+        
+        memcpy(part, vsi->original+start, size);
         part[size] = '\0';
         
         version_sorting_item_add_piece(vsi, part);
         
-        offset = ovector[1];
-        flags |= PCRE_NOTBOL;
+        start = end;
     }
-    
-    free(ovector);
 }
 
 void
