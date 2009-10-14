@@ -117,16 +117,20 @@ parse_version_word(VersionSortingItem *vsi)
     int offset = 0;
     int flags = 0;
     char *part;
+    int size;
 
     while (0 < pcre_exec(expr, 0, vsi->original, vsi->original_len, offset, flags, ovector, ovecsize)) {
         
-        part = malloc((vsi->original_len+1) * sizeof(char));
+        size = ovector[1] - ovector[0];
+
+        part = malloc((size+1) * sizeof(char));
         if (part == NULL) {
             DIE("ERROR: Not enough memory to allocate word")
         }
 
-        snprintf(part, vsi->original_len+1, "%.*s", ovector[1]-ovector[0], vsi->original+ovector[0]);
-
+        memcpy(part, vsi->original+ovector[0], size);
+        part[size] = '\0';
+        
         version_sorting_item_add_piece(vsi, part);
         
         offset = ovector[1];
