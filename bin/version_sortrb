@@ -1,0 +1,7 @@
+#!/usr/bin/env ruby
+
+require 'version_sorter'
+
+puts VersionSorter.sort ARGF.readlines
+
+# vim: syntax=ruby
