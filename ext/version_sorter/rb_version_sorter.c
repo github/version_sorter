@@ -26,19 +26,21 @@ rb_sort(VALUE obj, VALUE list)
     long len = RARRAY_LEN(list);
     long i;
     char **c_list = calloc(len, sizeof(char *));
+    int *ordering;
     VALUE rb_str, dest;
-    
+
     for (i = 0; i < len; i++) {
         rb_str = rb_ary_entry(list, i);
         c_list[i] = StringValuePtr(rb_str);
     }
-    version_sorter_sort(c_list, len);
-    
+    ordering = version_sorter_sort(c_list, len);
+
     dest = rb_ary_new2(len);
     for (i = 0; i < len; i++) {
-        rb_ary_store(dest, i, rb_str_new2(c_list[i]));
+        rb_ary_store(dest, i, rb_ary_entry(list, ordering[i]));
     }
-    
+    free(ordering);
+
     return dest;
 }
 
