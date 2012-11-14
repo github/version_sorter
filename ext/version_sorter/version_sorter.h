@@ -25,9 +25,15 @@
 
 #endif
 
+#if defined(BUILD_FOR_RUBY)
+#include <ruby.h>
+#define DIE(msg) \
+    rb_raise(rb_eRuntimeError, "%s", msg);
+#else
 #define DIE(msg) \
     fprintf(stderr, msg);\
-    exit(EXIT_FAILURE);\
+    exit(EXIT_FAILURE);
+#endif
 
 typedef struct _VersionSortingItem {
     struct _VersionPiece *head;
