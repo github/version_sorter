@@ -43,6 +43,7 @@ typedef struct _VersionSortingItem {
     char *normalized;
     const char *original;
     size_t original_len;
+    int original_idx;
 } VersionSortingItem;
 
 typedef struct _VersionPiece {
@@ -55,6 +56,6 @@ enum scan_state {
     digit, alpha, other
 };
 
-extern void version_sorter_sort(char **, size_t);
+extern int* version_sorter_sort(char **, size_t);
 
 #endif /* _VERSION_SORTER_H */

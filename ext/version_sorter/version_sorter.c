@@ -14,7 +14,7 @@
 #include "version_sorter.h"
 
 
-static VersionSortingItem * version_sorting_item_init(const char *);
+static VersionSortingItem * version_sorting_item_init(const char *, int);
 static void version_sorting_item_free(VersionSortingItem *);
 static void version_sorting_item_add_piece(VersionSortingItem *, char *);
 static void parse_version_word(VersionSortingItem *);
@@ -24,7 +24,7 @@ static enum scan_state scan_state_get(const char);
 
 
 VersionSortingItem *
-version_sorting_item_init(const char *original)
+version_sorting_item_init(const char *original, int idx)
 {
     VersionSortingItem *vsi = malloc(sizeof(VersionSortingItem));
     if (vsi == NULL) {
@@ -36,6 +36,7 @@ version_sorting_item_init(const char *original)
     vsi->widest_len = 0;
     vsi->original = original;
     vsi->original_len = strlen(original);
+    vsi->original_idx = idx;
     vsi->normalized = NULL;
     parse_version_word(vsi);
 
@@ -178,15 +179,16 @@ compare_by_version(const void *a, const void *b)
     return strcmp((*(const VersionSortingItem **)a)->normalized, (*(const VersionSortingItem **)b)->normalized);
 }
 
-void
+int*
 version_sorter_sort(char **list, size_t list_len)
 {
     int i, widest_len = 0;
     VersionSortingItem *vsi;
     VersionSortingItem **sorting_list = calloc(list_len, sizeof(VersionSortingItem *));
+    int *ordering = calloc(list_len, sizeof(int));
 
     for (i = 0; i < list_len; i++) {
-        vsi = version_sorting_item_init(list[i]);
+        vsi = version_sorting_item_init(list[i], i);
         if (vsi->widest_len > widest_len) {
             widest_len = vsi->widest_len;
         }
@@ -202,8 +204,10 @@ version_sorter_sort(char **list, size_t list_len)
     for (i = 0; i < list_len; i++) {
         vsi = sorting_list[i];
         list[i] = (char *) vsi->original;
+        ordering[i] = vsi->original_idx;
         version_sorting_item_free(vsi);
     }
     free(sorting_list);
 
+    return ordering;
 }
