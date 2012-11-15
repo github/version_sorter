@@ -14,7 +14,7 @@
 #include "version_sorter.h"
 
 
-static VersionSortingItem * version_sorting_item_init(const char *);
+static VersionSortingItem * version_sorting_item_init(const char *, int);
 static void version_sorting_item_free(VersionSortingItem *);
 static void version_sorting_item_add_piece(VersionSortingItem *, char *);
 static void parse_version_word(VersionSortingItem *);
@@ -24,7 +24,7 @@ static enum scan_state scan_state_get(const char);
 
 
 VersionSortingItem *
-version_sorting_item_init(const char *original)
+version_sorting_item_init(const char *original, int idx)
 {
     VersionSortingItem *vsi = malloc(sizeof(VersionSortingItem));
     if (vsi == NULL) {
@@ -36,9 +36,10 @@ version_sorting_item_init(const char *original)
     vsi->widest_len = 0;
     vsi->original = original;
     vsi->original_len = strlen(original);
-	vsi->normalized = NULL;
+    vsi->original_idx = idx;
+    vsi->normalized = NULL;
     parse_version_word(vsi);
-    
+
     return vsi;
 }
 
@@ -48,12 +49,12 @@ version_sorting_item_free(VersionSortingItem *vsi)
     VersionPiece *cur;
     while (cur = vsi->head) {
         vsi->head = cur->next;
-		free(cur->str);
+        free(cur->str);
         free(cur);
     }
-	if (vsi->normalized != NULL) {
-		free(vsi->normalized);
-	}
+    if (vsi->normalized != NULL) {
+      free(vsi->normalized);
+    }
     free(vsi);
 }
 
@@ -67,7 +68,7 @@ version_sorting_item_add_piece(VersionSortingItem *vsi, char *str)
     piece->str = str;
     piece->len = strlen(str);
     piece->next = NULL;
-    
+
     if (vsi->head == NULL) {
         vsi->head = piece;
         vsi->tail = piece;
@@ -101,16 +102,16 @@ parse_version_word(VersionSortingItem *vsi)
     char current_char, next_char;
     char *part;
     enum scan_state current_state, next_state;
-    
+
     while ((current_char = vsi->original[start]) != '\0') {
         current_state = scan_state_get(current_char);
-        
+
         if (current_state == other) {
             start++;
             end = start;
             continue;
         }
-        
+
         do {
             end++;
             next_char = vsi->original[end];
@@ -118,17 +119,17 @@ parse_version_word(VersionSortingItem *vsi)
         } while (next_char != '\0' && current_state == next_state);
 
         size = end - start;
-        
+
         part = malloc((size+1) * sizeof(char));
         if (part == NULL) {
             DIE("ERROR: Not enough memory to allocate word")
         }
-        
+
         memcpy(part, vsi->original+start, size);
         part[size] = '\0';
-        
+
         version_sorting_item_add_piece(vsi, part);
-        
+
         start = end;
     }
 }
@@ -136,18 +137,18 @@ parse_version_word(VersionSortingItem *vsi)
 void
 create_normalized_version(VersionSortingItem *vsi, const int widest_len)
 {
-    VersionPiece *cur;    
+    VersionPiece *cur;
     int pos, i;
-    
+
     char *result = malloc(((vsi->node_len * widest_len) + 1) * sizeof(char));
     if (result == NULL) {
         DIE("ERROR: Unable to allocate memory")
     }
     result[0] = '\0';
     pos = 0;
-    
+
     for (cur = vsi->head; cur; cur = cur->next) {
-        
+
         /* Left-Pad digits with a space */
         if (cur->len < widest_len && isdigit(cur->str[0])) {
             for (i = 0; i < widest_len - cur->len; i++) {
@@ -178,32 +179,35 @@ compare_by_version(const void *a, const void *b)
     return strcmp((*(const VersionSortingItem **)a)->normalized, (*(const VersionSortingItem **)b)->normalized);
 }
 
-void
+int*
 version_sorter_sort(char **list, size_t list_len)
 {
     int i, widest_len = 0;
     VersionSortingItem *vsi;
     VersionSortingItem **sorting_list = calloc(list_len, sizeof(VersionSortingItem *));
+    int *ordering = calloc(list_len, sizeof(int));
 
     for (i = 0; i < list_len; i++) {
-        vsi = version_sorting_item_init(list[i]);
+        vsi = version_sorting_item_init(list[i], i);
         if (vsi->widest_len > widest_len) {
             widest_len = vsi->widest_len;
         }
         sorting_list[i] = vsi;
     }
-    
+
     for (i = 0; i < list_len; i++) {
         create_normalized_version(sorting_list[i], widest_len);
     }
 
     qsort((void *) sorting_list, list_len, sizeof(VersionSortingItem *), &compare_by_version);
-    
+
     for (i = 0; i < list_len; i++) {
         vsi = sorting_list[i];
         list[i] = (char *) vsi->original;
-        
-		version_sorting_item_free(vsi);
+        ordering[i] = vsi->original_idx;
+        version_sorting_item_free(vsi);
     }
     free(sorting_list);
+
+    return ordering;
 }
