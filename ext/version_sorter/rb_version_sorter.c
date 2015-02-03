@@ -7,11 +7,7 @@
  *
  */
 
-#if XCODE
-#include <Ruby/ruby.h>
-#else
 #include <ruby.h>
-#endif
 #include "version_sorter.h"
 
 static VALUE rb_version_sorter_module;

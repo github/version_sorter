@@ -10,21 +10,6 @@
 #ifndef _VERSION_SORTER_H
 #define _VERSION_SORTER_H
 
-#if UNIT_TESTING
-
-#define static
-
-#include <stdarg.h>
-#include <stddef.h>
-#include <setjmp.h>
-#if XCODE
-#include <cmockery/cmockery.h>
-#else
-#include <cmockery.h>
-#endif
-
-#endif
-
 #if defined(BUILD_FOR_RUBY)
 #include <ruby.h>
 #define DIE(msg) \
