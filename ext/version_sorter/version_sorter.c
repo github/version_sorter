@@ -47,7 +47,7 @@ void
 version_sorting_item_free(VersionSortingItem *vsi)
 {
     VersionPiece *cur;
-    while (cur = vsi->head) {
+    while ((cur = vsi->head)) {
         vsi->head = cur->next;
         free(cur->str);
         free(cur);
