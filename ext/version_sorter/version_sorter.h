@@ -38,7 +38,7 @@ typedef struct _VersionPiece {
 } VersionPiece;
 
 enum scan_state {
-    digit, alpha, other
+    digit, alpha, pre, other
 };
 
 extern int* version_sorter_sort(char **, size_t);

@@ -18,7 +18,7 @@ static VersionSortingItem * version_sorting_item_init(const char *, int);
 static void version_sorting_item_free(VersionSortingItem *);
 static void version_sorting_item_add_piece(VersionSortingItem *, char *);
 static void parse_version_word(VersionSortingItem *);
-static void create_normalized_version(VersionSortingItem *, const int);
+static void create_normalized_version(VersionSortingItem *, const int, const int);
 static int compare_by_version(const void *, const void *);
 static enum scan_state scan_state_get(const char);
 
@@ -89,6 +89,8 @@ scan_state_get(const char c)
         return digit;
     } else if (isalpha(c)) {
         return alpha;
+    } else if (c == '-') {
+        return pre;
     } else {
         return other;
     }
@@ -99,78 +101,79 @@ void
 parse_version_word(VersionSortingItem *vsi)
 {
     int start = 0, end = 0, size = 0;
-    char current_char, next_char;
+    char current_char;
     char *part;
-    enum scan_state current_state, next_state;
+    enum scan_state current_state, previous_state;
 
-    while ((current_char = vsi->original[start]) != '\0') {
+    previous_state = other;
+    while (1) {
+        current_char = vsi->original[end];
         current_state = scan_state_get(current_char);
 
-        if (current_state == other) {
-            start++;
-            end = start;
-            continue;
+        if (current_state != previous_state && (previous_state == digit || previous_state == alpha)) {
+            size = end - start;
+
+            part = malloc((size+1) * sizeof(char));
+            if (part == NULL) {
+                DIE("ERROR: Not enough memory to allocate word")
+            }
+
+            memcpy(part, vsi->original+start, size);
+            part[size] = '\0';
+
+            version_sorting_item_add_piece(vsi, part);
+            start = end;
         }
 
-        do {
-            end++;
-            next_char = vsi->original[end];
-            next_state = scan_state_get(next_char);
-        } while (next_char != '\0' && current_state == next_state);
+        if (current_char == '\0') break;
 
-        size = end - start;
+        end++;
 
-        part = malloc((size+1) * sizeof(char));
-        if (part == NULL) {
-            DIE("ERROR: Not enough memory to allocate word")
+        if (current_state == other || current_state == pre) {
+            start = end;
         }
 
-        memcpy(part, vsi->original+start, size);
-        part[size] = '\0';
+        if (current_state == pre) {
+            part = malloc((3+1) * sizeof(char));
+            strcpy(part, "pre");
+            version_sorting_item_add_piece(vsi, part);
+        }
 
-        version_sorting_item_add_piece(vsi, part);
-
-        start = end;
+        previous_state = current_state;
     }
 }
 
 void
-create_normalized_version(VersionSortingItem *vsi, const int widest_len)
+create_normalized_version(VersionSortingItem *vsi, const int widest_len, const int max_pieces)
 {
     VersionPiece *cur;
-    int pos, i;
+    int i, pos, normalized_size = max_pieces * (widest_len + 1);
 
-    char *result = malloc(((vsi->node_len * widest_len) + 1) * sizeof(char));
+    char *result = malloc((normalized_size + 1) * sizeof(char));
     if (result == NULL) {
         DIE("ERROR: Unable to allocate memory")
     }
-    result[0] = '\0';
     pos = 0;
 
     for (cur = vsi->head; cur; cur = cur->next) {
-
-        /* Left-Pad digits with a space */
-        if (cur->len < widest_len && isdigit(cur->str[0])) {
-            for (i = 0; i < widest_len - cur->len; i++) {
-                result[pos] = ' ';
-                pos++;
-            }
-            result[pos] = '\0';
-        }
-        strcat(result, cur->str);
-        pos += cur->len;
-
-        /* Right-Pad words with a space */
-        if (cur->len < widest_len && isalpha(cur->str[0])) {
-            for (i = 0; i < widest_len - cur->len; i++) {
-                result[pos] = ' ';
-                pos++;
-            }
-            result[pos] = '\0';
+        if (isdigit(cur->str[0])) {
+          // left-pad digits with zeroes
+          for (i = 0; i < (widest_len + 1 - cur->len); i++) result[pos++] = '0';
+          memcpy(result + pos, cur->str, cur->len);
+          pos += cur->len;
+        } else {
+          // prefix words with "-", right-pad them with zeroes
+          result[pos++] = '-';
+          memcpy(result + pos, cur->str, cur->len);
+          pos += cur->len;
+          for (i = 0; i < (widest_len - cur->len); i++) result[pos++] = '0';
         }
     }
+
+    while (pos < normalized_size) result[pos++] = '0';
+    result[pos] = '\0';
+
     vsi->normalized = result;
-    vsi->widest_len = widest_len;
 }
 
 int
@@ -182,7 +185,7 @@ compare_by_version(const void *a, const void *b)
 int*
 version_sorter_sort(char **list, size_t list_len)
 {
-    int i, widest_len = 0;
+    int i, widest_len = 0, max_pieces = 0;
     VersionSortingItem *vsi;
     VersionSortingItem **sorting_list = calloc(list_len, sizeof(VersionSortingItem *));
     int *ordering = calloc(list_len, sizeof(int));
@@ -192,11 +195,14 @@ version_sorter_sort(char **list, size_t list_len)
         if (vsi->widest_len > widest_len) {
             widest_len = vsi->widest_len;
         }
+        if (vsi->node_len > max_pieces) {
+            max_pieces = vsi->node_len;
+        }
         sorting_list[i] = vsi;
     }
 
     for (i = 0; i < list_len; i++) {
-        create_normalized_version(sorting_list[i], widest_len);
+        create_normalized_version(sorting_list[i], widest_len, max_pieces);
     }
 
     qsort((void *) sorting_list, list_len, sizeof(VersionSortingItem *), &compare_by_version);

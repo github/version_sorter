@@ -4,7 +4,7 @@ require 'version_sorter'
 class VersionSorterTest < Test::Unit::TestCase
   def test_sorts_versions_correctly
     versions = %w(1.0.9 1.0.10 2.0 3.1.4.2 1.0.9a)
-    sorted_versions = %w( 1.0.9 1.0.9a 1.0.10 2.0 3.1.4.2 )
+    sorted_versions = %w( 1.0.9a 1.0.9 1.0.10 2.0 3.1.4.2 )
 
     assert_equal sorted_versions, VersionSorter.sort(versions)
   end
@@ -18,7 +18,7 @@ class VersionSorterTest < Test::Unit::TestCase
 
   def test_reverse_sorts_versions_correctly
     versions = %w(1.0.9 1.0.10 2.0 3.1.4.2 1.0.9a)
-    sorted_versions = %w( 3.1.4.2 2.0 1.0.10 1.0.9a 1.0.9 )
+    sorted_versions = %w( 3.1.4.2 2.0 1.0.10 1.0.9 1.0.9a )
 
     assert_equal sorted_versions, VersionSorter.rsort(versions)
   end
