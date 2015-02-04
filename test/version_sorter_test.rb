@@ -25,12 +25,3 @@ class VersionSorterTest < Test::Unit::TestCase
     assert_equal sorted_versions, rsort(versions)
   end
 end
-
-require 'benchmark'
-versions = IO.read(File.dirname(__FILE__) + '/tags.txt').split("\n")
-count = 10
-Benchmark.bm(20) do |x|
-  x.report("sort")             { count.times { VersionSorter.sort(versions) } }
-  x.report("rsot")             { count.times { VersionSorter.rsort(versions) } }
-end
-puts

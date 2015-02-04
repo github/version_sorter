@@ -1,0 +1,3 @@
+[submodule "vendor/readygo"]
+	path = vendor/readygo
+	url = https://github.com/garybernhardt/readygo.git

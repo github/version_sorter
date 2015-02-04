@@ -18,3 +18,8 @@ end
 desc "Compile the native extension"
 task :compile => 'lib/version_sorter.bundle'
 task :test => :compile
+
+desc "Run the benchmark"
+task :benchmark => :compile do
+  sh 'script/benchmark'
+end
