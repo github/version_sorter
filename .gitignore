@@ -1,3 +1,6 @@
 .ruby-version
-lib/*.bundle
+Makefile
+*.bundle
+*.o
+*.log
 tmp/
