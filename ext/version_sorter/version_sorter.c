@@ -51,7 +51,7 @@ compare_version_number(const struct version_number *a,
 		int num_b = (b->num_flags & (1ull << n)) != 0;
 
 		if (num_a == num_b) {
-			const union version_comp *ca = &a->comp[n]; 
+			const union version_comp *ca = &a->comp[n];
 			const union version_comp *cb = &b->comp[n];
 			int cmp = 0;
 
@@ -81,7 +81,7 @@ compare_version_number(const struct version_number *a,
 static int
 version_compare_cb(const void *a, const void *b)
 {
-    return compare_version_number(
+	return compare_version_number(
 		(*(const struct version_number **)a),
 		(*(const struct version_number **)b));
 }
@@ -89,7 +89,7 @@ version_compare_cb(const void *a, const void *b)
 static int
 version_compare_cb_r(const void *a, const void *b)
 {
-    return -compare_version_number(
+	return -compare_version_number(
 		(*(const struct version_number **)a),
 		(*(const struct version_number **)b));
 }
@@ -201,9 +201,9 @@ rb_version_sort_r(VALUE rb_self, VALUE rb_version_array)
 	return rb_version_sort_(rb_self, rb_version_array, version_compare_cb_r);
 }
 
-void  Init_version_sorter(void)
+void Init_version_sorter(void)
 {
-    VALUE rb_mVersionSorter = rb_define_module("VersionSorter");
-    rb_define_module_function(rb_mVersionSorter, "sort", rb_version_sort, 1);
-    rb_define_module_function(rb_mVersionSorter, "rsort", rb_version_sort_r, 1);
+	VALUE rb_mVersionSorter = rb_define_module("VersionSorter");
+	rb_define_module_function(rb_mVersionSorter, "sort", rb_version_sort, 1);
+	rb_define_module_function(rb_mVersionSorter, "rsort", rb_version_sort_r, 1);
 }

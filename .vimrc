@@ -1,1 +1,1 @@
-au FileType c,cpp setl tabstop=4 shiftwidth=4 expandtab
+au FileType c,cpp setl tabstop=2 shiftwidth=2 noexpandtab
