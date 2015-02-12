@@ -1,3 +1,4 @@
+# encoding: utf-8
 require 'test/unit'
 require 'version_sorter'
 require 'rubygems/version'
@@ -42,5 +43,19 @@ class VersionSorterTest < Test::Unit::TestCase
     randomized = big_numbers.sample(big_numbers.size)
 
     assert_equal big_numbers, VersionSorter.sort(randomized)
+  end
+
+  def test_handles_non_version_data
+    non_versions = [
+      "", " ", ".", "-", "ćevapčići", "The Quick Brown Fox", '!@#$%^&*()',
+      "<--------->", "a12a8a4a22122d01541b62193e9bdad7f5eda552", "1." * 65
+    ]
+    sorted = [
+      "<--------->", "-", "The Quick Brown Fox",
+      "a12a8a4a22122d01541b62193e9bdad7f5eda552", "ćevapčići",
+      "", " ", ".", '!@#$%^&*()', "1." * 65
+    ]
+
+    assert_equal sorted, VersionSorter.sort(non_versions)
   end
 end
