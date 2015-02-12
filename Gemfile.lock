@@ -7,10 +7,13 @@ GEM
   remote: https://rubygems.org/
   specs:
     rake (10.4.2)
+    rake-compiler (0.9.5)
+      rake
 
 PLATFORMS
   ruby
 
 DEPENDENCIES
   rake
+  rake-compiler
   version_sorter!
