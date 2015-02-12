@@ -30,4 +30,17 @@ class VersionSorterTest < Test::Unit::TestCase
 
     assert_equal sorted_versions, VersionSorter.rsort(versions)
   end
+
+  def test_does_not_raise_on_number_overflow
+    big_numbers = [
+      (2**32).to_s,
+      (2**32 + 1).to_s,
+      (2**32 + 2).to_s,
+      (2**32 - 2).to_s,
+      (2**32 - 1).to_s,
+    ]
+    randomized = big_numbers.sample(big_numbers.size)
+
+    assert_equal big_numbers, VersionSorter.sort(randomized)
+  end
 end

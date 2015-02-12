@@ -112,20 +112,26 @@ parse_version_number(const char *string)
 
 		if (isdigit(string[offset])) {
 			uint32_t number = 0;
+			uint16_t start = offset;
+			int overflown = 0;
 
 			while (isdigit(string[offset])) {
-				uint32_t old_number = number;
-				number = (10 * number) + (string[offset] - '0');
-
-				if (number < old_number)
-					rb_raise(rb_eRuntimeError,
-						"overflow when comparing numbers in version string");
+				if (!overflown) {
+					uint32_t old_number = number;
+					number = (10 * number) + (string[offset] - '0');
+					if (number < old_number) overflown = 1;
+				}
 
 				offset++;
 			}
 
-			version->comp[comp_n].number = number;
-			num_flags |= (1 << comp_n);
+			if (overflown) {
+				version->comp[comp_n].string.offset = start;
+				version->comp[comp_n].string.len = offset - start;
+			} else {
+				version->comp[comp_n].number = number;
+				num_flags |= (1 << comp_n);
+			}
 			comp_n++;
 			continue;
 		}
