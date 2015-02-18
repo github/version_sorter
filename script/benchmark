@@ -1,0 +1,36 @@
+#!/usr/bin/env bash
+# Usage: script/benchmark [compare|record]
+set -e
+
+task="${1:-compare}"
+
+case "$task" in
+record )
+  bin/rake
+  bin/readygo --record test/benchmark.rb
+  ;;
+compare )
+  bin/readygo --compare test/benchmark.rb | \
+  { if [ -t 1 ]; then
+      # Colorize benchmark output. If performance is negatively affected
+      # compared to baseline, highlight the "Current" line in red.
+      ruby -pe '
+        case $_
+        when /Baseline:/ then baseline = $_.index("X")
+        when /Current:/
+          $_ = "\e[%dm%s\e[m" % [ $_.index("X") > baseline ? 31 : 32, $_ ]
+        end
+      '
+    else
+      cat
+    fi
+  }
+  ;;
+-h | --help )
+  sed -ne '/^#/!q;s/.\{1,2\}//;1d;p' < "$0"
+  exit 0
+  ;;
+* )
+  "$0" --help >&2
+  exit 1
+esac

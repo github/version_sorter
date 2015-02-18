@@ -1,37 +1,61 @@
+# encoding: utf-8
 require 'test/unit'
-$LOAD_PATH.unshift File.dirname(__FILE__) + '/../lib'
 require 'version_sorter'
+require 'rubygems/version'
 
 class VersionSorterTest < Test::Unit::TestCase
-  include VersionSorter
-
-  def test_sorts_verisons_correctly
+  def test_sorts_versions_correctly
     versions = %w(1.0.9 1.0.10 2.0 3.1.4.2 1.0.9a)
-    sorted_versions = %w( 1.0.9 1.0.9a 1.0.10 2.0 3.1.4.2 )
+    sorted_versions = %w( 1.0.9a 1.0.9 1.0.10 2.0 3.1.4.2 )
 
-    assert_equal sorted_versions, sort(versions)
+    assert_equal sorted_versions, VersionSorter.sort(versions)
+  end
+
+  def test_sorts_versions_like_rubygems
+    versions = %w(1.0.9.b 1.0.9 1.0.10 2.0 3.1.4.2 1.0.9a 2.0rc2 2.0-rc1)
+    sorted_versions = versions.sort_by { |v| Gem::Version.new(v) }
+
+    assert_equal sorted_versions, VersionSorter.sort(versions)
   end
 
   def test_returns_same_object
     versions = %w( 2.0 1.0 0.5 )
-    sorted = sort(versions)
+    sorted = VersionSorter.sort(versions)
 
     assert_equal versions[2].object_id, sorted[0].object_id
   end
 
-  def test_reverse_sorts_verisons_correctly
+  def test_reverse_sorts_versions_correctly
     versions = %w(1.0.9 1.0.10 2.0 3.1.4.2 1.0.9a)
-    sorted_versions = %w( 3.1.4.2 2.0 1.0.10 1.0.9a 1.0.9 )
+    sorted_versions = %w( 3.1.4.2 2.0 1.0.10 1.0.9 1.0.9a )
 
-    assert_equal sorted_versions, rsort(versions)
+    assert_equal sorted_versions, VersionSorter.rsort(versions)
+  end
+
+  def test_does_not_raise_on_number_overflow
+    big_numbers = [
+      (2**32).to_s,
+      (2**32 + 1).to_s,
+      (2**32 + 2).to_s,
+      (2**32 - 2).to_s,
+      (2**32 - 1).to_s,
+    ]
+    randomized = big_numbers.sample(big_numbers.size)
+
+    assert_equal big_numbers, VersionSorter.sort(randomized)
+  end
+
+  def test_handles_non_version_data
+    non_versions = [
+      "", " ", ".", "-", "ćevapčići", "The Quick Brown Fox", '!@#$%^&*()',
+      "<--------->", "a12a8a4a22122d01541b62193e9bdad7f5eda552", "1." * 65
+    ]
+    sorted = [
+      "<--------->", "-", "The Quick Brown Fox",
+      "a12a8a4a22122d01541b62193e9bdad7f5eda552", "ćevapčići",
+      "", " ", ".", '!@#$%^&*()', "1." * 65
+    ]
+
+    assert_equal sorted, VersionSorter.sort(non_versions)
   end
 end
-
-require 'benchmark'
-versions = IO.read(File.dirname(__FILE__) + '/tags.txt').split("\n")
-count = 10
-Benchmark.bm(20) do |x|
-  x.report("sort")             { count.times { VersionSorter.sort(versions) } }
-  x.report("rsot")             { count.times { VersionSorter.rsort(versions) } }
-end
-puts
