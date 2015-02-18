@@ -95,19 +95,27 @@ version_compare_cb_r(const void *a, const void *b)
 }
 
 static struct version_number *
+grow_version_number(struct version_number *version, int new_size)
+{
+	return xrealloc(version,
+			(sizeof(struct version_number) +
+			 sizeof(union version_comp) * new_size));
+}
+
+static struct version_number *
 parse_version_number(const char *string)
 {
 	struct version_number *version = NULL;
 	uint64_t num_flags = 0x0;
 	uint16_t offset;
-	int comp_n = 0, comp_alloc = 0;
+	int comp_n = 0, comp_alloc = 4;
+
+	version = grow_version_number(version, comp_alloc);
 
 	for (offset = 0; string[offset] && comp_n < 64;) {
 		if (comp_n >= comp_alloc) {
 			comp_alloc += 4;
-			version = xrealloc(version,
-					(sizeof(struct version_number) +
-					 sizeof(union version_comp) * comp_alloc));
+			version = grow_version_number(version, comp_alloc);
 		}
 
 		if (isdigit(string[offset])) {
