@@ -19,9 +19,9 @@ typedef int compare_callback_t(const void *, const void *);
 
 struct version_number {
 	const char *original;
+	VALUE rb_version;
 	uint64_t num_flags;
-	int original_idx;
-	int size;
+	int32_t size;
 	union version_comp {
 		uint32_t number;
 		struct strchunk {
@@ -162,11 +162,11 @@ parse_version_number(const char *string)
 }
 
 static VALUE
-rb_version_sort_(VALUE rb_self, VALUE rb_version_array, compare_callback_t cmp)
+rb_version_sort_1(VALUE rb_self, VALUE rb_version_array, compare_callback_t cmp)
 {
 	struct version_number **versions;
 	long length, i;
-	VALUE rb_result_array;
+	VALUE *rb_version_ptr;
 
 	Check_Type(rb_version_array, T_ARRAY);
 
@@ -179,32 +179,42 @@ rb_version_sort_(VALUE rb_self, VALUE rb_version_array, compare_callback_t cmp)
 	for (i = 0; i < length; ++i) {
 		VALUE rb_version = rb_ary_entry(rb_version_array, i);
 		versions[i] = parse_version_number(StringValuePtr(rb_version));
-		versions[i]->original_idx = i;
+		versions[i]->rb_version = rb_version;
 	}
 
 	qsort(versions, length, sizeof(struct version_number *), cmp);
-	rb_result_array = rb_ary_new2(length);
-	rb_ary_resize(rb_result_array, length);
+	rb_version_ptr = RARRAY_PTR(rb_version_array);
 
 	for (i = 0; i < length; ++i) {
-		VALUE rb_version = rb_ary_entry(rb_version_array, versions[i]->original_idx);
-		rb_ary_store(rb_result_array, i, rb_version);
+		rb_version_ptr[i] = versions[i]->rb_version;
 		xfree(versions[i]);
 	}
 	xfree(versions);
-	return rb_result_array;
+	return rb_version_array;
 }
 
 static VALUE
-rb_version_sort(VALUE rb_self, VALUE rb_version_array)
+rb_version_sort(VALUE rb_self, VALUE rb_versions)
 {
-	return rb_version_sort_(rb_self, rb_version_array, version_compare_cb);
+	return rb_version_sort_1(rb_self, rb_ary_dup(rb_versions), version_compare_cb);
 }
 
 static VALUE
-rb_version_sort_r(VALUE rb_self, VALUE rb_version_array)
+rb_version_sort_r(VALUE rb_self, VALUE rb_versions)
 {
-	return rb_version_sort_(rb_self, rb_version_array, version_compare_cb_r);
+	return rb_version_sort_1(rb_self, rb_ary_dup(rb_versions), version_compare_cb_r);
+}
+
+static VALUE
+rb_version_sort_bang(VALUE rb_self, VALUE rb_versions)
+{
+	return rb_version_sort_1(rb_self, rb_versions, version_compare_cb);
+}
+
+static VALUE
+rb_version_sort_r_bang(VALUE rb_self, VALUE rb_versions)
+{
+	return rb_version_sort_1(rb_self, rb_versions, version_compare_cb_r);
 }
 
 void Init_version_sorter(void)
@@ -212,4 +222,6 @@ void Init_version_sorter(void)
 	VALUE rb_mVersionSorter = rb_define_module("VersionSorter");
 	rb_define_module_function(rb_mVersionSorter, "sort", rb_version_sort, 1);
 	rb_define_module_function(rb_mVersionSorter, "rsort", rb_version_sort_r, 1);
+	rb_define_module_function(rb_mVersionSorter, "sort!", rb_version_sort_bang, 1);
+	rb_define_module_function(rb_mVersionSorter, "rsort!", rb_version_sort_r_bang, 1);
 }
