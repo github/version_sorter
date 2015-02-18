@@ -177,7 +177,7 @@ rb_version_sort_(VALUE rb_self, VALUE rb_version_array, compare_callback_t cmp)
 	versions = xcalloc(length, sizeof(struct version_number *));
 
 	for (i = 0; i < length; ++i) {
-		VALUE rb_version = RARRAY_AREF(rb_version_array, i);
+		VALUE rb_version = rb_ary_entry(rb_version_array, i);
 		versions[i] = parse_version_number(StringValuePtr(rb_version));
 		versions[i]->original_idx = i;
 	}
@@ -187,8 +187,8 @@ rb_version_sort_(VALUE rb_self, VALUE rb_version_array, compare_callback_t cmp)
 	rb_ary_resize(rb_result_array, length);
 
 	for (i = 0; i < length; ++i) {
-		VALUE rb_version = RARRAY_AREF(rb_version_array, versions[i]->original_idx);
-		RARRAY_ASET(rb_result_array, i, rb_version);
+		VALUE rb_version = rb_ary_entry(rb_version_array, versions[i]->original_idx);
+		rb_ary_store(rb_result_array, i, rb_version);
 		xfree(versions[i]);
 	}
 	xfree(versions);
