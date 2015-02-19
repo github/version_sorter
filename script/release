@@ -1,0 +1,10 @@
+#!/usr/bin/env bash
+set -e
+
+gem build *.gemspec | awk '/Name:|Version:|File:/ { print $2 }' | xargs | {
+  read gem_name gem_version gem_file
+  trap "rm -rf $gem_file" INT EXIT
+  git tag "v${gem_version}"
+  git push origin HEAD "v${gem_version}"
+  gem push "$gem_file"
+}
