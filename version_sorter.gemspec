@@ -1,10 +1,9 @@
 # encoding: utf-8
 require 'rbconfig'
-require File.expand_path('../lib/version_sorter/version', __FILE__)
 
 Gem::Specification.new do |s|
   s.name     = 'version_sorter'
-  s.version  = VersionSorter::Version
+  s.version  = '1.1.1'
   s.authors  = ["Chris Wanstrath", "K. Adam Christensen"]
   s.email    = 'chris@ozmm.org'
   s.homepage = 'https://github.com/defunkt/version_sorter'
