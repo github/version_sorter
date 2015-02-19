@@ -40,7 +40,7 @@ class VersionSorterTest < Test::Unit::TestCase
       (2**32 - 2).to_s,
       (2**32 - 1).to_s,
     ]
-    randomized = big_numbers.sample(big_numbers.size)
+    randomized = shuffle big_numbers
 
     assert_equal big_numbers, VersionSorter.sort(randomized)
   end
@@ -57,5 +57,23 @@ class VersionSorterTest < Test::Unit::TestCase
     ]
 
     assert_equal sorted, VersionSorter.sort(non_versions)
+  end
+
+  def test_sort_bang
+    versions = ["10.0", "1.0", "2.0"]
+    VersionSorter.sort! versions
+    assert_equal ["1.0", "2.0", "10.0"], versions
+  end
+
+  def test_rsort_bang
+    versions = ["10.0", "1.0", "2.0"]
+    VersionSorter.rsort! versions
+    assert_equal ["10.0", "2.0", "1.0"], versions
+  end
+
+  def shuffle(array)
+    array, result = array.dup, []
+    result << array.delete_at(rand(array.size)) until array.size.zero?
+    result
   end
 end

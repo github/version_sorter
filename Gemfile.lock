@@ -9,6 +9,7 @@ GEM
     rake (10.4.2)
     rake-compiler (0.9.5)
       rake
+    test-unit (2.0.9)
 
 PLATFORMS
   ruby
@@ -16,4 +17,5 @@ PLATFORMS
 DEPENDENCIES
   rake
   rake-compiler
+  test-unit (~> 2.0.4)
   version_sorter!
