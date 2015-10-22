@@ -6,7 +6,7 @@ Gem::Specification.new do |s|
   s.version  = '2.0.0'
   s.authors  = ["Chris Wanstrath", "K. Adam Christensen"]
   s.email    = 'chris@ozmm.org'
-  s.homepage = 'https://github.com/defunkt/version_sorter'
+  s.homepage = 'https://github.com/github/version_sorter#readme'
   s.license  = 'MIT'
 
   s.summary     = "Fast sorting of version strings"
