@@ -4,6 +4,14 @@ require 'version_sorter'
 require 'rubygems/version'
 
 class VersionSorterTest < Test::Unit::TestCase
+  def setup
+    version_struct = Struct.new(:name)
+
+    @version1 = version_struct.new("1.0")
+    @version2 = version_struct.new("2.0")
+    @version10 = version_struct.new("10.0")
+  end
+
   def test_sorts_versions_correctly
     versions = %w(1.0.9 1.0.10 2.0 3.1.4.2 1.0.9a)
     sorted_versions = %w( 1.0.9a 1.0.9 1.0.10 2.0 3.1.4.2 )
@@ -69,6 +77,18 @@ class VersionSorterTest < Test::Unit::TestCase
     versions = ["10.0", "1.0", "2.0"]
     VersionSorter.rsort! versions
     assert_equal ["10.0", "2.0", "1.0"], versions
+  end
+
+  def test_sort_block
+    versions = [@version10, @version1, @version2]
+    sorted = VersionSorter.sort(versions) { |version| version.name }
+    assert_equal [@version1, @version2, @version10], sorted
+  end
+
+  def test_rsort_block
+    versions = [@version10, @version1, @version2]
+    sorted = VersionSorter.rsort(versions) { |version| version.name }
+    assert_equal [@version10, @version2, @version1], sorted
   end
 
   def shuffle(array)

@@ -185,8 +185,15 @@ rb_version_sort_1(VALUE rb_self, VALUE rb_version_array, compare_callback_t cmp)
 	versions = xcalloc(length, sizeof(struct version_number *));
 
 	for (i = 0; i < length; ++i) {
-		VALUE rb_version = rb_ary_entry(rb_version_array, i);
-		versions[i] = parse_version_number(StringValuePtr(rb_version));
+		VALUE rb_version, rb_version_string;
+
+		rb_version = rb_ary_entry(rb_version_array, i);
+		if (rb_block_given_p())
+			rb_version_string = rb_yield(rb_version);
+		else
+			rb_version_string = rb_version;
+
+		versions[i] = parse_version_number(StringValuePtr(rb_version_string));
 		versions[i]->rb_version = rb_version;
 	}
 

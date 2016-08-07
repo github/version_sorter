@@ -15,6 +15,12 @@ VersionSorter.sort(versions)
 #=> 2.0
 ```
 
+You can also sort arrays of arbitrary objects by providing a block.
+
+```rb
+VersionSorter.sort(tags) { |tag| tag.name }
+```
+
 Library API:
 
 ```rb
