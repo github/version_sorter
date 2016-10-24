@@ -1,0 +1,4 @@
+#!/usr/bin/env bash
+set -e
+
+exec env ruby -Ilib vendor/readygo/readygo.rb "$@"

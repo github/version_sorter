@@ -11,199 +11,232 @@
 #include <stdio.h>
 #include <string.h>
 #include <ctype.h>
-#include "version_sorter.h"
+#include <assert.h>
+#include <ruby.h>
 
+#define min(a, b) ((a) < (b) ? (a) : (b))
+typedef int compare_callback_t(const void *, const void *);
 
-static VersionSortingItem * version_sorting_item_init(const char *);
-static void version_sorting_item_free(VersionSortingItem *);
-static void version_sorting_item_add_piece(VersionSortingItem *, char *);
-static void parse_version_word(VersionSortingItem *);
-static void create_normalized_version(VersionSortingItem *, const int);
-static int compare_by_version(const void *, const void *);
-static enum scan_state scan_state_get(const char);
+struct version_number {
+	const char *original;
+	VALUE rb_version;
+	uint64_t num_flags;
+	int32_t size;
+	union version_comp {
+		uint32_t number;
+		struct strchunk {
+			uint16_t offset;
+			uint16_t len;
+		} string;
+	} comp[1];
+};
 
-
-VersionSortingItem *
-version_sorting_item_init(const char *original)
+static int
+strchunk_cmp(const char *original_a, const struct strchunk *a,
+		const char *original_b, const struct strchunk *b)
 {
-    VersionSortingItem *vsi = malloc(sizeof(VersionSortingItem));
-    if (vsi == NULL) {
-        DIE("ERROR: Not enough memory to allocate VersionSortingItem")
-    }
-    vsi->head = NULL;
-    vsi->tail = NULL;
-    vsi->node_len = 0;
-    vsi->widest_len = 0;
-    vsi->original = original;
-    vsi->original_len = strlen(original);
-	vsi->normalized = NULL;
-    parse_version_word(vsi);
-    
-    return vsi;
+	size_t len = min(a->len, b->len);
+	int cmp = memcmp(original_a + a->offset, original_b + b->offset, len);
+	return cmp ? cmp : (int)(a->len - b->len);
 }
 
-void
-version_sorting_item_free(VersionSortingItem *vsi)
+static int
+compare_version_number(const struct version_number *a,
+		const struct version_number *b)
 {
-    VersionPiece *cur;
-    while (cur = vsi->head) {
-        vsi->head = cur->next;
-		free(cur->str);
-        free(cur);
-    }
-	if (vsi->normalized != NULL) {
-		free(vsi->normalized);
+	int n, max_n = min(a->size, b->size);
+
+	for (n = 0; n < max_n; ++n) {
+		int num_a = (a->num_flags & (1ull << n)) != 0;
+		int num_b = (b->num_flags & (1ull << n)) != 0;
+
+		if (num_a == num_b) {
+			const union version_comp *ca = &a->comp[n];
+			const union version_comp *cb = &b->comp[n];
+			int cmp = 0;
+
+			if (num_a) {
+				cmp = (int)ca->number - (int)cb->number;
+			} else {
+				cmp = strchunk_cmp(
+						a->original, &ca->string,
+						b->original, &cb->string);
+			}
+
+			if (cmp) return cmp;
+		} else {
+			return num_a ? 1 : -1;
+		}
 	}
-    free(vsi);
+
+	if (a->size < b->size)
+		return (b->num_flags & (1ull << n)) ? -1 : 1;
+
+	if (a->size > b->size)
+		return (a->num_flags & (1ull << n)) ? 1 : -1;
+
+	return 0;
 }
 
-void
-version_sorting_item_add_piece(VersionSortingItem *vsi, char *str)
+static int
+version_compare_cb(const void *a, const void *b)
 {
-    VersionPiece *piece = malloc(sizeof(VersionPiece));
-    if (piece == NULL) {
-        DIE("ERROR: Not enough memory to allocate string linked list node")
-    }
-    piece->str = str;
-    piece->len = strlen(str);
-    piece->next = NULL;
-    
-    if (vsi->head == NULL) {
-        vsi->head = piece;
-        vsi->tail = piece;
-    } else {
-        vsi->tail->next = piece;
-        vsi->tail = piece;
-    }
-    vsi->node_len++;
-    if (piece->len > vsi->widest_len) {
-        vsi->widest_len = piece->len;
-    }
+	return compare_version_number(
+		(*(const struct version_number **)a),
+		(*(const struct version_number **)b));
 }
 
-enum scan_state
-scan_state_get(const char c)
+static int
+version_compare_cb_r(const void *a, const void *b)
 {
-    if (isdigit(c)) {
-        return digit;
-    } else if (isalpha(c)) {
-        return alpha;
-    } else {
-        return other;
-    }
-
+	return -compare_version_number(
+		(*(const struct version_number **)a),
+		(*(const struct version_number **)b));
 }
 
-void
-parse_version_word(VersionSortingItem *vsi)
+static struct version_number *
+grow_version_number(struct version_number *version, int new_size)
 {
-    int start = 0, end = 0, size = 0;
-    char current_char, next_char;
-    char *part;
-    enum scan_state current_state, next_state;
-    
-    while ((current_char = vsi->original[start]) != '\0') {
-        current_state = scan_state_get(current_char);
-        
-        if (current_state == other) {
-            start++;
-            end = start;
-            continue;
-        }
-        
-        do {
-            end++;
-            next_char = vsi->original[end];
-            next_state = scan_state_get(next_char);
-        } while (next_char != '\0' && current_state == next_state);
-
-        size = end - start;
-        
-        part = malloc((size+1) * sizeof(char));
-        if (part == NULL) {
-            DIE("ERROR: Not enough memory to allocate word")
-        }
-        
-        memcpy(part, vsi->original+start, size);
-        part[size] = '\0';
-        
-        version_sorting_item_add_piece(vsi, part);
-        
-        start = end;
-    }
+	return xrealloc(version,
+			(sizeof(struct version_number) +
+			 sizeof(union version_comp) * new_size));
 }
 
-void
-create_normalized_version(VersionSortingItem *vsi, const int widest_len)
+static struct version_number *
+parse_version_number(const char *string)
 {
-    VersionPiece *cur;    
-    int pos, i;
-    
-    char *result = malloc(((vsi->node_len * widest_len) + 1) * sizeof(char));
-    if (result == NULL) {
-        DIE("ERROR: Unable to allocate memory")
-    }
-    result[0] = '\0';
-    pos = 0;
-    
-    for (cur = vsi->head; cur; cur = cur->next) {
-        
-        /* Left-Pad digits with a space */
-        if (cur->len < widest_len && isdigit(cur->str[0])) {
-            for (i = 0; i < widest_len - cur->len; i++) {
-                result[pos] = ' ';
-                pos++;
-            }
-            result[pos] = '\0';
-        }
-        strcat(result, cur->str);
-        pos += cur->len;
+	struct version_number *version = NULL;
+	uint64_t num_flags = 0x0;
+	uint16_t offset;
+	int comp_n = 0, comp_alloc = 4;
 
-        /* Right-Pad words with a space */
-        if (cur->len < widest_len && isalpha(cur->str[0])) {
-            for (i = 0; i < widest_len - cur->len; i++) {
-                result[pos] = ' ';
-                pos++;
-            }
-            result[pos] = '\0';
-        }
-    }
-    vsi->normalized = result;
-    vsi->widest_len = widest_len;
+	version = grow_version_number(version, comp_alloc);
+
+	for (offset = 0; string[offset] && comp_n < 64;) {
+		if (comp_n >= comp_alloc) {
+			comp_alloc += 4;
+			version = grow_version_number(version, comp_alloc);
+		}
+
+		if (isdigit(string[offset])) {
+			uint32_t number = 0;
+			uint16_t start = offset;
+			int overflown = 0;
+
+			while (isdigit(string[offset])) {
+				if (!overflown) {
+					uint32_t old_number = number;
+					number = (10 * number) + (string[offset] - '0');
+					if (number < old_number) overflown = 1;
+				}
+
+				offset++;
+			}
+
+			if (overflown) {
+				version->comp[comp_n].string.offset = start;
+				version->comp[comp_n].string.len = offset - start;
+			} else {
+				version->comp[comp_n].number = number;
+				num_flags |= (1 << comp_n);
+			}
+			comp_n++;
+			continue;
+		}
+
+		if (string[offset] == '-' || isalpha(string[offset])) {
+			uint16_t start = offset;
+
+			if (string[offset] == '-')
+				offset++;
+
+			while (isalpha(string[offset]))
+				offset++;
+
+			version->comp[comp_n].string.offset = start;
+			version->comp[comp_n].string.len = offset - start;
+			comp_n++;
+			continue;
+		}
+
+		offset++;
+	}
+
+	version->original = string;
+	version->num_flags = num_flags;
+	version->size = comp_n;
+
+	return version;
 }
 
-int
-compare_by_version(const void *a, const void *b)
+static VALUE
+rb_version_sort_1(VALUE rb_self, VALUE rb_version_array, compare_callback_t cmp)
 {
-    return strcmp((*(const VersionSortingItem **)a)->normalized, (*(const VersionSortingItem **)b)->normalized);
+	struct version_number **versions;
+	long length, i;
+	VALUE *rb_version_ptr;
+
+	Check_Type(rb_version_array, T_ARRAY);
+
+	length = RARRAY_LEN(rb_version_array);
+	if (!length)
+		return rb_ary_new();
+
+	versions = xcalloc(length, sizeof(struct version_number *));
+
+	for (i = 0; i < length; ++i) {
+		VALUE rb_version, rb_version_string;
+
+		rb_version = rb_ary_entry(rb_version_array, i);
+		if (rb_block_given_p())
+			rb_version_string = rb_yield(rb_version);
+		else
+			rb_version_string = rb_version;
+
+		versions[i] = parse_version_number(StringValuePtr(rb_version_string));
+		versions[i]->rb_version = rb_version;
+	}
+
+	qsort(versions, length, sizeof(struct version_number *), cmp);
+	rb_version_ptr = RARRAY_PTR(rb_version_array);
+
+	for (i = 0; i < length; ++i) {
+		rb_version_ptr[i] = versions[i]->rb_version;
+		xfree(versions[i]);
+	}
+	xfree(versions);
+	return rb_version_array;
 }
 
-void
-version_sorter_sort(char **list, size_t list_len)
+static VALUE
+rb_version_sort(VALUE rb_self, VALUE rb_versions)
 {
-    int i, widest_len = 0;
-    VersionSortingItem *vsi;
-    VersionSortingItem **sorting_list = calloc(list_len, sizeof(VersionSortingItem *));
+	return rb_version_sort_1(rb_self, rb_ary_dup(rb_versions), version_compare_cb);
+}
 
-    for (i = 0; i < list_len; i++) {
-        vsi = version_sorting_item_init(list[i]);
-        if (vsi->widest_len > widest_len) {
-            widest_len = vsi->widest_len;
-        }
-        sorting_list[i] = vsi;
-    }
-    
-    for (i = 0; i < list_len; i++) {
-        create_normalized_version(sorting_list[i], widest_len);
-    }
+static VALUE
+rb_version_sort_r(VALUE rb_self, VALUE rb_versions)
+{
+	return rb_version_sort_1(rb_self, rb_ary_dup(rb_versions), version_compare_cb_r);
+}
 
-    qsort((void *) sorting_list, list_len, sizeof(VersionSortingItem *), &compare_by_version);
-    
-    for (i = 0; i < list_len; i++) {
-        vsi = sorting_list[i];
-        list[i] = (char *) vsi->original;
-        
-		version_sorting_item_free(vsi);
-    }
-    free(sorting_list);
+static VALUE
+rb_version_sort_bang(VALUE rb_self, VALUE rb_versions)
+{
+	return rb_version_sort_1(rb_self, rb_versions, version_compare_cb);
+}
+
+static VALUE
+rb_version_sort_r_bang(VALUE rb_self, VALUE rb_versions)
+{
+	return rb_version_sort_1(rb_self, rb_versions, version_compare_cb_r);
+}
+
+void Init_version_sorter(void)
+{
+	VALUE rb_mVersionSorter = rb_define_module("VersionSorter");
+	rb_define_module_function(rb_mVersionSorter, "sort", rb_version_sort, 1);
+	rb_define_module_function(rb_mVersionSorter, "rsort", rb_version_sort_r, 1);
+	rb_define_module_function(rb_mVersionSorter, "sort!", rb_version_sort_bang, 1);
+	rb_define_module_function(rb_mVersionSorter, "rsort!", rb_version_sort_r_bang, 1);
 }
