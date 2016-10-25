@@ -1,5 +1,3 @@
-
-#line 1 "version_sorter.rl"
 /*
  *  version_sorter.c
  *  version_sorter
@@ -22,17 +20,10 @@ typedef int compare_callback_t(const void *, const void *);
 
 void Init_version_sorter(void);
 
-
-#line 27 "version_sorter.c"
-static const int parser_start = 1;
-static const int parser_first_final = 1;
-static const int parser_error = -1;
-
-static const int parser_en_main = 1;
-
-
-#line 26 "version_sorter.rl"
-
+%%{
+	machine parser;
+	write data;
+}%%
 
 struct version_number {
 	const char *original;
@@ -132,238 +123,30 @@ parse_version_number(const char *string, long len)
 
 	struct version_number *version = grow_version_number(NULL, comp_alloc);
 
-	
-#line 137 "version_sorter.c"
-	{
-	cs = parser_start;
-	}
+	%%{
+		action start {
+			if (comp_n >= comp_alloc) {
+				comp_alloc += 4;
+				version = grow_version_number(version, comp_alloc);
+			}
+			start = p;
+		}
 
-#line 142 "version_sorter.c"
-	{
-	if ( p == pe )
-		goto _test_eof;
-	switch ( cs )
-	{
-case 1:
-	if ( (*p) == 45 )
-		goto tr1;
-	if ( (*p) < 65 ) {
-		if ( 48 <= (*p) && (*p) <= 57 )
-			goto tr2;
-	} else if ( (*p) > 90 ) {
-		if ( 97 <= (*p) && (*p) <= 122 )
-			goto tr1;
-	} else
-		goto tr1;
-	goto st0;
-tr3:
-#line 159 "version_sorter.rl"
-	{
-			version->comp[comp_n].string.offset = (uint16_t)(start - string);
-			version->comp[comp_n].string.len = (uint16_t)(p - start);
-		}
-#line 164 "version_sorter.rl"
-	{
-			comp_n++;
-		}
-	goto st0;
-tr7:
-#line 149 "version_sorter.rl"
-	{
-			if (overflown) {
-				version->comp[comp_n].string.offset = (uint16_t)(start - string);
-				version->comp[comp_n].string.len = (uint16_t)(p - start);
-			} else {
-				version->comp[comp_n].number = number;
-				num_flags |= (1 << comp_n);
-			}
-		}
-#line 164 "version_sorter.rl"
-	{
-			comp_n++;
-		}
-	goto st0;
-st0:
-	if ( ++p == pe )
-		goto _test_eof0;
-case 0:
-#line 191 "version_sorter.c"
-	if ( (*p) == 45 )
-		goto tr1;
-	if ( (*p) < 65 ) {
-		if ( 48 <= (*p) && (*p) <= 57 )
-			goto tr2;
-	} else if ( (*p) > 90 ) {
-		if ( 97 <= (*p) && (*p) <= 122 )
-			goto tr1;
-	} else
-		goto tr1;
-	goto st0;
-tr1:
-#line 127 "version_sorter.rl"
-	{
-			if (comp_n >= comp_alloc) {
-				comp_alloc += 4;
-				version = grow_version_number(version, comp_alloc);
-			}
-			start = p;
-		}
-	goto st2;
-tr4:
-#line 159 "version_sorter.rl"
-	{
-			version->comp[comp_n].string.offset = (uint16_t)(start - string);
-			version->comp[comp_n].string.len = (uint16_t)(p - start);
-		}
-#line 164 "version_sorter.rl"
-	{
-			comp_n++;
-		}
-#line 127 "version_sorter.rl"
-	{
-			if (comp_n >= comp_alloc) {
-				comp_alloc += 4;
-				version = grow_version_number(version, comp_alloc);
-			}
-			start = p;
-		}
-	goto st2;
-tr8:
-#line 149 "version_sorter.rl"
-	{
-			if (overflown) {
-				version->comp[comp_n].string.offset = (uint16_t)(start - string);
-				version->comp[comp_n].string.len = (uint16_t)(p - start);
-			} else {
-				version->comp[comp_n].number = number;
-				num_flags |= (1 << comp_n);
-			}
-		}
-#line 164 "version_sorter.rl"
-	{
-			comp_n++;
-		}
-#line 127 "version_sorter.rl"
-	{
-			if (comp_n >= comp_alloc) {
-				comp_alloc += 4;
-				version = grow_version_number(version, comp_alloc);
-			}
-			start = p;
-		}
-	goto st2;
-st2:
-	if ( ++p == pe )
-		goto _test_eof2;
-case 2:
-#line 260 "version_sorter.c"
-	if ( (*p) == 45 )
-		goto tr4;
-	if ( (*p) < 65 ) {
-		if ( 48 <= (*p) && (*p) <= 57 )
-			goto tr5;
-	} else if ( (*p) > 90 ) {
-		if ( 97 <= (*p) && (*p) <= 122 )
-			goto st2;
-	} else
-		goto st2;
-	goto tr3;
-tr2:
-#line 127 "version_sorter.rl"
-	{
-			if (comp_n >= comp_alloc) {
-				comp_alloc += 4;
-				version = grow_version_number(version, comp_alloc);
-			}
-			start = p;
-		}
-#line 135 "version_sorter.rl"
-	{
+		action num_start {
 			number = 0;
 			overflown = 0;
 		}
-#line 140 "version_sorter.rl"
-	{
-			if (!overflown) {
-				uint32_t old_number = number;
-				number = (10 * number) + (uint32_t)(*p - '0');
-				if (number < old_number)
-					overflown = 1;
-			}
-		}
-	goto st3;
-tr5:
-#line 159 "version_sorter.rl"
-	{
-			version->comp[comp_n].string.offset = (uint16_t)(start - string);
-			version->comp[comp_n].string.len = (uint16_t)(p - start);
-		}
-#line 164 "version_sorter.rl"
-	{
-			comp_n++;
-		}
-#line 127 "version_sorter.rl"
-	{
-			if (comp_n >= comp_alloc) {
-				comp_alloc += 4;
-				version = grow_version_number(version, comp_alloc);
-			}
-			start = p;
-		}
-#line 135 "version_sorter.rl"
-	{
-			number = 0;
-			overflown = 0;
-		}
-#line 140 "version_sorter.rl"
-	{
-			if (!overflown) {
-				uint32_t old_number = number;
-				number = (10 * number) + (uint32_t)(*p - '0');
-				if (number < old_number)
-					overflown = 1;
-			}
-		}
-	goto st3;
-tr9:
-#line 140 "version_sorter.rl"
-	{
-			if (!overflown) {
-				uint32_t old_number = number;
-				number = (10 * number) + (uint32_t)(*p - '0');
-				if (number < old_number)
-					overflown = 1;
-			}
-		}
-	goto st3;
-st3:
-	if ( ++p == pe )
-		goto _test_eof3;
-case 3:
-#line 344 "version_sorter.c"
-	if ( (*p) == 45 )
-		goto tr8;
-	if ( (*p) < 65 ) {
-		if ( 48 <= (*p) && (*p) <= 57 )
-			goto tr9;
-	} else if ( (*p) > 90 ) {
-		if ( 97 <= (*p) && (*p) <= 122 )
-			goto tr8;
-	} else
-		goto tr8;
-	goto tr7;
-	}
-	_test_eof0: cs = 0; goto _test_eof; 
-	_test_eof2: cs = 2; goto _test_eof; 
-	_test_eof3: cs = 3; goto _test_eof; 
 
-	_test_eof: {}
-	if ( p == eof )
-	{
-	switch ( cs ) {
-	case 3: 
-#line 149 "version_sorter.rl"
-	{
+		action num_process {
+			if (!overflown) {
+				uint32_t old_number = number;
+				number = (10 * number) + (uint32_t)(*p - '0');
+				if (number < old_number)
+					overflown = 1;
+			}
+		}
+
+		action num_end {
 			if (overflown) {
 				version->comp[comp_n].string.offset = (uint16_t)(start - string);
 				version->comp[comp_n].string.len = (uint16_t)(p - start);
@@ -372,30 +155,24 @@ case 3:
 				num_flags |= (1 << comp_n);
 			}
 		}
-#line 164 "version_sorter.rl"
-	{
-			comp_n++;
-		}
-	break;
-	case 2: 
-#line 159 "version_sorter.rl"
-	{
+
+		action word_end {
 			version->comp[comp_n].string.offset = (uint16_t)(start - string);
 			version->comp[comp_n].string.len = (uint16_t)(p - start);
 		}
-#line 164 "version_sorter.rl"
-	{
+
+		action end {
 			comp_n++;
 		}
-	break;
-#line 392 "version_sorter.c"
-	}
-	}
 
-	}
+		number = digit+ >start >num_start @num_process %num_end %end;
+		word   = ("-" | alpha) >start alpha* %word_end %end;
 
-#line 175 "version_sorter.rl"
+		main := (any* :>> (word | number))**;
 
+		write init;
+		write exec;
+	}%%
 
 	version->original = string;
 	version->num_flags = num_flags;
