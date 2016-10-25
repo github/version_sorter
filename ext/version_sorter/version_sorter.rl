@@ -107,7 +107,7 @@ grow_version_number(struct version_number *version, uint new_size)
 {
 	return xrealloc(version,
 			(sizeof(struct version_number) +
-			 sizeof(union version_comp) * new_size));
+			 sizeof(union version_comp) * (new_size - 1)));
 }
 
 static struct version_number *
