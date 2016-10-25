@@ -111,15 +111,15 @@ grow_version_number(struct version_number *version, uint new_size)
 }
 
 static struct version_number *
-parse_version_number(char *string, long len)
+parse_version_number(const char *string, long len)
 {
 	uint32_t num_flags = 0x0;
 	uint32_t number = 0;
 	uint comp_n = 0, comp_alloc = 4;
 	int overflown = 0;
-	char *p = string, *pe = string + len, *eof = pe;  // Ragel variables.
+	const char *p = string, *pe = string + len, *eof = pe;  // Ragel variables.
 	int cs;
-	char *start = NULL;
+	const char *start = NULL;
 
 	struct version_number *version = grow_version_number(NULL, comp_alloc);
 
