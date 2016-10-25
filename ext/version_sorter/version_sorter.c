@@ -105,7 +105,7 @@ grow_version_number(struct version_number *version, uint new_size)
 }
 
 static struct version_number *
-parse_version_number(const char *string)
+parse_version_number(const char *string, long len)
 {
 	struct version_number *version = NULL;
 	uint32_t num_flags = 0x0;
@@ -114,7 +114,7 @@ parse_version_number(const char *string)
 
 	version = grow_version_number(version, comp_alloc);
 
-	for (offset = 0; string[offset] && comp_n < 64;) {
+	for (offset = 0; offset < len && comp_n < 64;) {
 		if (comp_n >= comp_alloc) {
 			comp_alloc += 4;
 			version = grow_version_number(version, comp_alloc);
@@ -197,7 +197,8 @@ rb_version_sort_1(VALUE rb_self, VALUE rb_version_array, compare_callback_t cmp)
 		else
 			rb_version_string = rb_version;
 
-		versions[i] = parse_version_number(StringValuePtr(rb_version_string));
+		versions[i] = parse_version_number(
+				RSTRING_PTR(rb_version_string), RSTRING_LEN(rb_version_string));
 		versions[i]->rb_version = rb_version;
 	}
 
