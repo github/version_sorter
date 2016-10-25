@@ -17,6 +17,8 @@
 #define min(a, b) ((a) < (b) ? (a) : (b))
 typedef int compare_callback_t(const void *, const void *);
 
+void Init_version_sorter(void);
+
 struct version_number {
 	const char *original;
 	VALUE rb_version;
@@ -82,20 +84,20 @@ static int
 version_compare_cb(const void *a, const void *b)
 {
 	return compare_version_number(
-		(*(const struct version_number **)a),
-		(*(const struct version_number **)b));
+		(*(const struct version_number * const *)a),
+		(*(const struct version_number * const *)b));
 }
 
 static int
 version_compare_cb_r(const void *a, const void *b)
 {
 	return -compare_version_number(
-		(*(const struct version_number **)a),
-		(*(const struct version_number **)b));
+		(*(const struct version_number * const *)a),
+		(*(const struct version_number * const *)b));
 }
 
 static struct version_number *
-grow_version_number(struct version_number *version, int new_size)
+grow_version_number(struct version_number *version, uint new_size)
 {
 	return xrealloc(version,
 			(sizeof(struct version_number) +
@@ -106,9 +108,9 @@ static struct version_number *
 parse_version_number(const char *string)
 {
 	struct version_number *version = NULL;
-	uint64_t num_flags = 0x0;
+	uint32_t num_flags = 0x0;
 	uint16_t offset;
-	int comp_n = 0, comp_alloc = 4;
+	uint comp_n = 0, comp_alloc = 4;
 
 	version = grow_version_number(version, comp_alloc);
 
@@ -126,7 +128,7 @@ parse_version_number(const char *string)
 			while (isdigit(string[offset])) {
 				if (!overflown) {
 					uint32_t old_number = number;
-					number = (10 * number) + (string[offset] - '0');
+					number = (10 * number) + (uint32_t)(string[offset] - '0');
 					if (number < old_number) overflown = 1;
 				}
 
@@ -164,7 +166,7 @@ parse_version_number(const char *string)
 
 	version->original = string;
 	version->num_flags = num_flags;
-	version->size = comp_n;
+	version->size = (int32_t)comp_n;
 
 	return version;
 }
@@ -172,6 +174,8 @@ parse_version_number(const char *string)
 static VALUE
 rb_version_sort_1(VALUE rb_self, VALUE rb_version_array, compare_callback_t cmp)
 {
+	(void)rb_self;  // Unused.
+
 	struct version_number **versions;
 	long length, i;
 	VALUE *rb_version_ptr;
@@ -197,7 +201,7 @@ rb_version_sort_1(VALUE rb_self, VALUE rb_version_array, compare_callback_t cmp)
 		versions[i]->rb_version = rb_version;
 	}
 
-	qsort(versions, length, sizeof(struct version_number *), cmp);
+	qsort(versions, (size_t)length, sizeof(struct version_number *), cmp);
 	rb_version_ptr = RARRAY_PTR(rb_version_array);
 
 	for (i = 0; i < length; ++i) {
@@ -232,7 +236,8 @@ rb_version_sort_r_bang(VALUE rb_self, VALUE rb_versions)
 	return rb_version_sort_1(rb_self, rb_versions, version_compare_cb_r);
 }
 
-void Init_version_sorter(void)
+void
+Init_version_sorter(void)
 {
 	VALUE rb_mVersionSorter = rb_define_module("VersionSorter");
 	rb_define_module_function(rb_mVersionSorter, "sort", rb_version_sort, 1);
