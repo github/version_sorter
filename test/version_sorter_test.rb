@@ -91,6 +91,12 @@ class VersionSorterTest < Test::Unit::TestCase
     assert_equal [@version10, @version2, @version1], sorted
   end
 
+  def test_compare
+    assert VersionSorter.compare("10.0", "1.0") > 0
+    assert VersionSorter.compare("10.0", "12.0") < 0
+    assert_equal 0, VersionSorter.compare("12.0", "12.0")
+  end
+
   def shuffle(array)
     array, result = array.dup, []
     result << array.delete_at(rand(array.size)) until array.size.zero?
