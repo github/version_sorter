@@ -21,6 +21,10 @@ class VersionSorterTest < Test::Unit::TestCase
 
   def test_sorts_versions_like_rubygems
     versions = %w(1.0.9.b 1.0.9 1.0.10 2.0 3.1.4.2 1.0.9a 2.0rc2 2.0-rc1)
+    if (Gem.rubygems_version < Gem::Version.new('2.1.0')) 
+      # Old versions of RubyGems cannot parse semver versions like `2.0-rc1`
+      versions.pop()
+    end
     sorted_versions = versions.sort_by { |v| Gem::Version.new(v) }
 
     assert_equal sorted_versions, VersionSorter.sort(versions)
@@ -89,6 +93,12 @@ class VersionSorterTest < Test::Unit::TestCase
     versions = [@version10, @version1, @version2]
     sorted = VersionSorter.rsort(versions) { |version| version.name }
     assert_equal [@version10, @version2, @version1], sorted
+  end
+
+  def test_compare
+    assert VersionSorter.compare("10.0", "1.0") > 0
+    assert VersionSorter.compare("10.0", "12.0") < 0
+    assert_equal 0, VersionSorter.compare("12.0", "12.0")
   end
 
   def shuffle(array)
