@@ -193,7 +193,7 @@ rb_version_sort_1(VALUE rb_self, VALUE rb_version_array, compare_callback_t cmp)
 		else
 			rb_version_string = rb_version;
 
-		versions[i] = parse_version_number(StringValuePtr(rb_version_string));
+		versions[i] = parse_version_number(StringValueCStr(rb_version_string));
 		versions[i]->rb_version = rb_version;
 	}
 
@@ -235,8 +235,8 @@ rb_version_sort_r_bang(VALUE rb_self, VALUE rb_versions)
 static VALUE
 rb_version_compare(VALUE rb_self, VALUE rb_version_a, VALUE rb_version_b)
 {
-	struct version_number *version_a = parse_version_number(StringValuePtr(rb_version_a));
-	struct version_number *version_b = parse_version_number(StringValuePtr(rb_version_b));
+	struct version_number *version_a = parse_version_number(StringValueCStr(rb_version_a));
+	struct version_number *version_b = parse_version_number(StringValueCStr(rb_version_b));
 	return INT2NUM(version_compare_cb(&version_a, &version_b));
 }
 
