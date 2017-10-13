@@ -186,7 +186,7 @@ rb_version_sort_1(VALUE rb_self, VALUE rb_version_array, compare_callback_t cmp)
 
 	for (i = 0; i < length; ++i) {
 		VALUE rb_version = rb_ary_entry(rb_version_array, i);
-		versions[i] = parse_version_number(StringValueCStr(rb_version_string));
+		versions[i] = parse_version_number(StringValueCStr(rb_version));
 		versions[i]->rb_version = rb_version;
 	}
 
