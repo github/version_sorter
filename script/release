@@ -1,0 +1,27 @@
+#!/bin/bash
+# Edit the version string in the gemspec, then execute this script to:
+#
+# 1. Commit the version change
+# 2. Tag the release
+# 3. Push the tag and the current branch to GitHub
+# 4. Publish the gem to RubyGems
+#
+set -eu
+
+fields=( $(gem build *.gemspec | awk '/Name:|Version:/ {print $2}') )
+name="${fields[0]}"
+version="${fields[1]}"
+gem="${name}-${version}.gem"
+[ -n "$version" ] || exit 1
+trap "rm -f '$gem'" EXIT
+
+bundle install
+script/test
+
+if ! git rev-parse --verify --quiet "refs/tags/v${version}" >/dev/null; then
+  git commit --allow-empty -a -m "$name $version"
+  git tag "v${version}"
+fi
+
+git push origin HEAD "v${version}"
+gem push "$gem"
