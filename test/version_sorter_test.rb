@@ -21,7 +21,7 @@ class VersionSorterTest < Test::Unit::TestCase
 
   def test_sorts_versions_like_rubygems
     versions = %w(1.0.9.b 1.0.9 1.0.10 2.0 3.1.4.2 1.0.9a 2.0rc2 2.0-rc1)
-    if (Gem.rubygems_version < Gem::Version.new('2.1.0')) 
+    if !Gem.respond_to?(:rubygems_version) || Gem.rubygems_version < Gem::Version.new('2.1.0')
       # Old versions of RubyGems cannot parse semver versions like `2.0-rc1`
       versions.pop()
     end
