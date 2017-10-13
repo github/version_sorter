@@ -1,7 +1,7 @@
 PATH
   remote: .
   specs:
-    version_sorter (1.1.1)
+    version_sorter (2.0.0)
 
 GEM
   remote: https://rubygems.org/
@@ -19,3 +19,6 @@ DEPENDENCIES
   rake-compiler
   test-unit (~> 2.0.4)
   version_sorter!
+
+BUNDLED WITH
+   1.15.4
