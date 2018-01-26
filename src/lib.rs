@@ -5,11 +5,11 @@ use std::cmp::{self, Ordering};
 
 ruby! {
     class VersionSorter {
-        def sort(versions: Vec<String>) -> Vec<String> {
+        def int_sort(versions: Vec<String>) -> Vec<u32> {
             do_sort(versions, cmp_fwd)
         }
 
-        def rsort(versions: Vec<String>) -> Vec<String> {
+        def int_rsort(versions: Vec<String>) -> Vec<u32> {
             do_sort(versions, cmp_bwd)
         }
 
@@ -71,7 +71,7 @@ fn cmp_bwd(a: &VersionNumber, b: &VersionNumber) -> Ordering {
     cmp_fwd(a, b).reverse()
 }
 
-fn do_sort<F>(versions: Vec<String>, cmp: F) -> Vec<String>
+fn do_sort<F>(versions: Vec<String>, cmp: F) -> Vec<u32>
 where
     F: FnMut(&VersionNumber, &VersionNumber) -> Ordering,
 {
@@ -84,7 +84,7 @@ where
 
     let mut sorted_versions = Vec::with_capacity(len);
     for i in 0..len {
-        sorted_versions.push(versions[vns[i].i].clone());
+        sorted_versions.push(vns[i].i as u32);
     }
 
     sorted_versions
