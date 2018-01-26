@@ -6,19 +6,23 @@ PATH
 GEM
   remote: https://rubygems.org/
   specs:
+    helix_runtime (0.7.2)
+      rake (>= 10.0)
+      thor (~> 0.19.4)
+      tomlrb (~> 1.2.4)
     rake (10.4.2)
-    rake-compiler (0.9.5)
-      rake
     test-unit (2.0.9)
+    thor (0.19.4)
+    tomlrb (1.2.6)
 
 PLATFORMS
   ruby
 
 DEPENDENCIES
+  helix_runtime (~> 0.7)
   rake
-  rake-compiler
   test-unit (~> 2.0.4)
   version_sorter!
 
 BUNDLED WITH
-   1.15.2
+   1.16.1

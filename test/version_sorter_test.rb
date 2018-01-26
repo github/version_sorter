@@ -30,13 +30,6 @@ class VersionSorterTest < Test::Unit::TestCase
     assert_equal sorted_versions, VersionSorter.sort(versions)
   end
 
-  def test_returns_same_object
-    versions = %w( 2.0 1.0 0.5 )
-    sorted = VersionSorter.sort(versions)
-
-    assert_equal versions[2].object_id, sorted[0].object_id
-  end
-
   def test_reverse_sorts_versions_correctly
     versions = %w(1.0.9 1.0.10 2.0 3.1.4.2 1.0.9a)
     sorted_versions = %w( 3.1.4.2 2.0 1.0.10 1.0.9 1.0.9a )

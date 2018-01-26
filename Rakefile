@@ -1,5 +1,5 @@
 require 'rake/testtask'
-require 'rake/extensiontask'
+import 'lib/tasks/helix_runtime.rake'
 
 task :default => :test
 
@@ -8,12 +8,7 @@ Rake::TestTask.new(:test) do |t|
   t.test_files = FileList['test/*test.rb']
 end
 
-Rake::ExtensionTask.new('version_sorter')
-
-desc "Compile the native extension"
-task :test => :compile
-
 desc "Run the benchmark"
-task :benchmark => :compile do
+task :benchmark do
   sh 'script/benchmark'
 end

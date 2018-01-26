@@ -1,0 +1,10 @@
+[package]
+name = "version_sorter"
+version = "0.1.0"
+authors = ["Ashe Connor <ashe@kivikakk.ee>"]
+
+[lib]
+crate-type = ["cdylib"]
+
+[dependencies]
+helix = "0.7"
