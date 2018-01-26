@@ -1,6 +1,5 @@
 .ruby-version
 Makefile
-*.bundle
 *.o
 *.log
 tmp/

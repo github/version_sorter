@@ -12,7 +12,9 @@ Gem::Specification.new do |s|
   s.summary     = "Fast sorting of version strings"
   s.description = "VersionSorter is a C extension that does fast sorting of large sets of version strings."
 
-  s.files = Dir['lib/**/*', 'LICENSE*']
+  s.files = Dir['lib/**/*', 'LICENSE*', 'Cargo.*', 'src/**/*']
+
+  s.platform = Gem::Platform::CURRENT
 
   # include only files in version control
   git_dir = File.expand_path('../.git', __FILE__)

@@ -1,7 +1,7 @@
 PATH
   remote: .
   specs:
-    version_sorter (2.2.1)
+    version_sorter (2.2.1-x86_64-darwin-17)
 
 GEM
   remote: https://rubygems.org/
