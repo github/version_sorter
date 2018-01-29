@@ -16,5 +16,6 @@ Gem::Specification.new do |s|
 
   s.platform = Gem::Platform::CURRENT
 
+  s.add_development_dependency 'helix_runtime', '~> 0.7'
   s.add_runtime_dependency 'helix_runtime', '~> 0.7'
 end
