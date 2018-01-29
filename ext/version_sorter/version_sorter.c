@@ -138,7 +138,7 @@ parse_version_number(const char *string)
 				version->comp[comp_n].string.len = offset - start;
 			} else {
 				version->comp[comp_n].number = number;
-				num_flags |= (1 << comp_n);
+				num_flags |= (1ull << comp_n);
 			}
 			comp_n++;
 			continue;
