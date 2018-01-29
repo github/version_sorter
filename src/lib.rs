@@ -39,11 +39,21 @@ fn cmp_fwd(a: &VersionNumber, b: &VersionNumber) -> Ordering {
                 r => return r,
             },
             (&VersionComponent::String(a), &VersionComponent::String(b)) => {
-                let sz = cmp::min(a.len(), b.len());
+                let alen = a.len();
+                let blen = b.len();
+                let sz = cmp::min(alen, blen);
                 let a = &a[..sz];
                 let b = &b[..sz];
                 match a.cmp(&b) {
-                    Ordering::Equal => (),
+                    Ordering::Equal => {
+                        if alen < blen {
+                            return Ordering::Less;
+                        } else if alen == blen {
+                            ()
+                        } else {
+                            return Ordering::Greater;
+                        }
+                    },
                     r => return r,
                 }
             }
