@@ -2,7 +2,7 @@ sudo: false
 language: ruby
 script: script/test
 before_install:
-  - bundle --version 2>/dev/null | grep -q '1.7.6' && gem install bundler -v 1.11.2 || true
+  - gem install bundler -v 1.16.1
   - curl https://sh.rustup.rs -sSf | sh -s -- -y
   - export PATH=$HOME/.cargo/bin:$PATH
 rvm:
