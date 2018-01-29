@@ -22,4 +22,6 @@ Gem::Specification.new do |s|
     RbConfig::CONFIG['host_os'] =~ /msdos|mswin|djgpp|mingw/ ? 'NUL' : '/dev/null'
   git_files = `git --git-dir='#{git_dir}' ls-files -z 2>#{dev_null}`.split("\0")
   s.files &= git_files if git_files.any?
+
+  s.add_runtime_dependency 'helix_runtime', '~> 0.7'
 end
