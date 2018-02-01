@@ -15,6 +15,7 @@
 #include <ruby.h>
 
 #define min(a, b) ((a) < (b) ? (a) : (b))
+#define max(a, b) ((a) > (b) ? (a) : (b))
 typedef int compare_callback_t(const void *, const void *);
 
 struct version_number {
@@ -56,7 +57,8 @@ compare_version_number(const struct version_number *a,
 			int cmp = 0;
 
 			if (num_a) {
-				cmp = (int)ca->number - (int)cb->number;
+				int64_t cmp64 = (int64_t)ca->number - (int64_t)cb->number;
+				cmp = (int)max(INT_MIN, min(INT_MAX, cmp64));
 			} else {
 				cmp = strchunk_cmp(
 						a->original, &ca->string,
