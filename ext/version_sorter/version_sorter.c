@@ -239,7 +239,13 @@ rb_version_compare(VALUE rb_self, VALUE rb_version_a, VALUE rb_version_b)
 {
 	struct version_number *version_a = parse_version_number(StringValueCStr(rb_version_a));
 	struct version_number *version_b = parse_version_number(StringValueCStr(rb_version_b));
-	return INT2NUM(version_compare_cb(&version_a, &version_b));
+
+	VALUE result = INT2NUM(version_compare_cb(&version_a, &version_b));
+
+	xfree(version_a);
+	xfree(version_b);
+
+	return result;
 }
 
 void Init_version_sorter(void)
