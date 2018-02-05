@@ -58,7 +58,7 @@ compare_version_number(const struct version_number *a,
 
 			if (num_a) {
 				int64_t cmp64 = (int64_t)ca->number - (int64_t)cb->number;
-				cmp = (int)max(INT_MIN, min(INT_MAX, cmp64));
+				cmp = (int)max(-1, min(1, cmp64));
 			} else {
 				cmp = strchunk_cmp(
 						a->original, &ca->string,
