@@ -171,12 +171,42 @@ parse_version_number(const char *string)
 	return version;
 }
 
+struct sort_context {
+	VALUE rb_self;
+	VALUE rb_version_array;
+	compare_callback_t *cmp;
+	struct version_number **versions;
+};
+
+static VALUE
+rb_version_sort_1_cb(VALUE arg)
+{
+	struct sort_context *context = (struct sort_context *)arg;
+	long length, i;
+	VALUE *rb_version_ptr;
+
+	length = RARRAY_LEN(context->rb_version_array);
+	for (i = 0; i < length; ++i) {
+		VALUE rb_version = rb_ary_entry(context->rb_version_array, i);
+		context->versions[i] = parse_version_number(StringValueCStr(rb_version));
+		context->versions[i]->rb_version = rb_version;
+	}
+
+	qsort(context->versions, length, sizeof(struct version_number *), context->cmp);
+	rb_version_ptr = RARRAY_PTR(context->rb_version_array);
+
+	for (i = 0; i < length; ++i) {
+		rb_version_ptr[i] = context->versions[i]->rb_version;
+	}
+
+	return context->rb_version_array;
+}
+
 static VALUE
 rb_version_sort_1(VALUE rb_self, VALUE rb_version_array, compare_callback_t cmp)
 {
-	struct version_number **versions;
 	long length, i;
-	VALUE *rb_version_ptr;
+	int exception;
 
 	Check_Type(rb_version_array, T_ARRAY);
 
@@ -184,23 +214,25 @@ rb_version_sort_1(VALUE rb_self, VALUE rb_version_array, compare_callback_t cmp)
 	if (!length)
 		return rb_ary_new();
 
-	versions = xcalloc(length, sizeof(struct version_number *));
+	struct sort_context context = {
+		rb_self,
+		rb_version_array,
+		cmp,
+		xcalloc(length, sizeof(struct version_number *)),
+	};
+
+	VALUE result = rb_protect(rb_version_sort_1_cb, (VALUE)&context, &exception);
 
 	for (i = 0; i < length; ++i) {
-		VALUE rb_version = rb_ary_entry(rb_version_array, i);
-		versions[i] = parse_version_number(StringValueCStr(rb_version));
-		versions[i]->rb_version = rb_version;
+		xfree(context.versions[i]);
+	}
+	xfree(context.versions);
+
+	if (exception) {
+		rb_jump_tag(exception);
 	}
 
-	qsort(versions, length, sizeof(struct version_number *), cmp);
-	rb_version_ptr = RARRAY_PTR(rb_version_array);
-
-	for (i = 0; i < length; ++i) {
-		rb_version_ptr[i] = versions[i]->rb_version;
-		xfree(versions[i]);
-	}
-	xfree(versions);
-	return rb_version_array;
+	return result;
 }
 
 static VALUE
