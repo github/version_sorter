@@ -171,10 +171,27 @@ parse_version_number(const char *string)
 	return version;
 }
 
+static VALUE rb_cSortContext;
+
+struct sort_context {
+	struct version_number **versions;
+	long length;
+};
+
+static void sort_context_free(void *p) {
+	struct sort_context *context = p;
+	long i;
+
+	for (i = 0; i < context->length; ++i) {
+		xfree(context->versions[i]);
+	}
+	xfree(context->versions);
+	xfree(context);
+}
+
 static VALUE
 rb_version_sort_1(VALUE rb_self, VALUE rb_version_array, compare_callback_t cmp)
 {
-	struct version_number **versions;
 	long length, i;
 	VALUE *rb_version_ptr;
 
@@ -184,7 +201,12 @@ rb_version_sort_1(VALUE rb_self, VALUE rb_version_array, compare_callback_t cmp)
 	if (!length)
 		return rb_ary_new();
 
-	versions = xcalloc(length, sizeof(struct version_number *));
+	struct sort_context *context;
+	context = ALLOC(struct sort_context);
+	context->length = length;
+	context->versions = xcalloc(length, sizeof(struct version_number *));
+
+	VALUE data = Data_Wrap_Struct(rb_cSortContext, NULL, sort_context_free, context);
 
 	for (i = 0; i < length; ++i) {
 		VALUE rb_version, rb_version_string;
@@ -195,18 +217,17 @@ rb_version_sort_1(VALUE rb_self, VALUE rb_version_array, compare_callback_t cmp)
 		else
 			rb_version_string = rb_version;
 
-		versions[i] = parse_version_number(StringValueCStr(rb_version_string));
-		versions[i]->rb_version = rb_version;
+		context->versions[i] = parse_version_number(StringValueCStr(rb_version_string));
+		context->versions[i]->rb_version = rb_version;
 	}
 
-	qsort(versions, length, sizeof(struct version_number *), cmp);
+	qsort(context->versions, length, sizeof(struct version_number *), cmp);
 	rb_version_ptr = RARRAY_PTR(rb_version_array);
 
 	for (i = 0; i < length; ++i) {
-		rb_version_ptr[i] = versions[i]->rb_version;
-		xfree(versions[i]);
+		rb_version_ptr[i] = context->versions[i]->rb_version;
 	}
-	xfree(versions);
+
 	return rb_version_array;
 }
 
@@ -256,4 +277,6 @@ void Init_version_sorter(void)
 	rb_define_module_function(rb_mVersionSorter, "sort!", rb_version_sort_bang, 1);
 	rb_define_module_function(rb_mVersionSorter, "rsort!", rb_version_sort_r_bang, 1);
 	rb_define_module_function(rb_mVersionSorter, "compare", rb_version_compare, 2);
+
+	rb_cSortContext = rb_define_class_under(rb_mVersionSorter, "SortContext", rb_cObject);
 }
