@@ -3,7 +3,7 @@ require 'rbconfig'
 
 Gem::Specification.new do |s|
   s.name     = 'version_sorter'
-  s.version  = '2.2.2'
+  s.version  = '2.2.3'
   s.authors  = ["Chris Wanstrath", "K. Adam Christensen"]
   s.email    = 'chris@ozmm.org'
   s.homepage = 'https://github.com/github/version_sorter#readme'

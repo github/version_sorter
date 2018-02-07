@@ -1,7 +1,7 @@
 PATH
   remote: .
   specs:
-    version_sorter (2.2.2)
+    version_sorter (2.2.3)
 
 GEM
   remote: https://rubygems.org/
