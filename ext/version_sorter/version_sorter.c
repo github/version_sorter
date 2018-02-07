@@ -266,16 +266,39 @@ rb_version_sort_r_bang(VALUE rb_self, VALUE rb_versions)
 	return rb_version_sort_1(rb_self, rb_versions, version_compare_cb_r);
 }
 
+struct compare_context {
+	VALUE rb_version_a, rb_version_b;
+	struct version_number *version_a, *version_b;
+};
+
+static VALUE
+rb_version_compare_cb(VALUE arg)
+{
+	struct compare_context *context = (struct compare_context *)arg;
+
+	context->version_a = parse_version_number(StringValueCStr(context->rb_version_a));
+	context->version_b = parse_version_number(StringValueCStr(context->rb_version_b));
+
+	return INT2NUM(version_compare_cb(&context->version_a, &context->version_b));
+}
+
 static VALUE
 rb_version_compare(VALUE rb_self, VALUE rb_version_a, VALUE rb_version_b)
 {
-	struct version_number *version_a = parse_version_number(StringValueCStr(rb_version_a));
-	struct version_number *version_b = parse_version_number(StringValueCStr(rb_version_b));
+	int exception;
+	struct compare_context context = {
+		rb_version_a, rb_version_b,
+		NULL, NULL,
+	};
 
-	VALUE result = INT2NUM(version_compare_cb(&version_a, &version_b));
+	VALUE result = rb_protect(rb_version_compare_cb, (VALUE)&context, &exception);
 
-	xfree(version_a);
-	xfree(version_b);
+	xfree(context.version_a);
+	xfree(context.version_b);
+
+	if (exception) {
+		rb_jump_tag(exception);
+	}
 
 	return result;
 }
