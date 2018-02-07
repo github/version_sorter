@@ -239,7 +239,7 @@ rb_version_sort_1(VALUE rb_self, VALUE rb_version_array, compare_callback_t cmp)
 		rb_jump_tag(exception);
 	}
 
-	return rb_version_array;
+	return result;
 }
 
 static VALUE
