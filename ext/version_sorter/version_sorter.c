@@ -58,7 +58,7 @@ compare_version_number(const struct version_number *a,
 
 			if (num_a) {
 				int64_t cmp64 = (int64_t)ca->number - (int64_t)cb->number;
-				cmp = (int)max(INT_MIN, min(INT_MAX, cmp64));
+				cmp = (int)max(-1, min(1, cmp64));
 			} else {
 				cmp = strchunk_cmp(
 						a->original, &ca->string,
@@ -239,7 +239,13 @@ rb_version_compare(VALUE rb_self, VALUE rb_version_a, VALUE rb_version_b)
 {
 	struct version_number *version_a = parse_version_number(StringValueCStr(rb_version_a));
 	struct version_number *version_b = parse_version_number(StringValueCStr(rb_version_b));
-	return INT2NUM(version_compare_cb(&version_a, &version_b));
+
+	VALUE result = INT2NUM(version_compare_cb(&version_a, &version_b));
+
+	xfree(version_a);
+	xfree(version_b);
+
+	return result;
 }
 
 void Init_version_sorter(void)
