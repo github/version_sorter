@@ -171,12 +171,49 @@ parse_version_number(const char *string)
 	return version;
 }
 
+struct sort_context {
+	VALUE rb_self;
+	VALUE rb_version_array;
+	compare_callback_t *cmp;
+	struct version_number **versions;
+};
+
+static VALUE
+rb_version_sort_1_cb(VALUE arg)
+{
+	struct sort_context *context = (struct sort_context *)arg;
+	long length, i;
+	VALUE *rb_version_ptr;
+
+	length = RARRAY_LEN(context->rb_version_array);
+	for (i = 0; i < length; ++i) {
+		VALUE rb_version, rb_version_string;
+
+		rb_version = rb_ary_entry(context->rb_version_array, i);
+		if (rb_block_given_p())
+			rb_version_string = rb_yield(rb_version);
+		else
+			rb_version_string = rb_version;
+
+		context->versions[i] = parse_version_number(StringValueCStr(rb_version_string));
+		context->versions[i]->rb_version = rb_version;
+	}
+
+	qsort(context->versions, length, sizeof(struct version_number *), context->cmp);
+	rb_version_ptr = RARRAY_PTR(context->rb_version_array);
+
+	for (i = 0; i < length; ++i) {
+		rb_version_ptr[i] = context->versions[i]->rb_version;
+	}
+
+	return context->rb_version_array;
+}
+
 static VALUE
 rb_version_sort_1(VALUE rb_self, VALUE rb_version_array, compare_callback_t cmp)
 {
-	struct version_number **versions;
 	long length, i;
-	VALUE *rb_version_ptr;
+	int exception;
 
 	Check_Type(rb_version_array, T_ARRAY);
 
@@ -184,30 +221,25 @@ rb_version_sort_1(VALUE rb_self, VALUE rb_version_array, compare_callback_t cmp)
 	if (!length)
 		return rb_ary_new();
 
-	versions = xcalloc(length, sizeof(struct version_number *));
+	struct sort_context context = {
+		rb_self,
+		rb_version_array,
+		cmp,
+		xcalloc(length, sizeof(struct version_number *)),
+	};
+
+	VALUE result = rb_protect(rb_version_sort_1_cb, (VALUE)&context, &exception);
 
 	for (i = 0; i < length; ++i) {
-		VALUE rb_version, rb_version_string;
+		xfree(context.versions[i]);
+	}
+	xfree(context.versions);
 
-		rb_version = rb_ary_entry(rb_version_array, i);
-		if (rb_block_given_p())
-			rb_version_string = rb_yield(rb_version);
-		else
-			rb_version_string = rb_version;
-
-		versions[i] = parse_version_number(StringValueCStr(rb_version_string));
-		versions[i]->rb_version = rb_version;
+	if (exception) {
+		rb_jump_tag(exception);
 	}
 
-	qsort(versions, length, sizeof(struct version_number *), cmp);
-	rb_version_ptr = RARRAY_PTR(rb_version_array);
-
-	for (i = 0; i < length; ++i) {
-		rb_version_ptr[i] = versions[i]->rb_version;
-		xfree(versions[i]);
-	}
-	xfree(versions);
-	return rb_version_array;
+	return result;
 }
 
 static VALUE
@@ -234,16 +266,39 @@ rb_version_sort_r_bang(VALUE rb_self, VALUE rb_versions)
 	return rb_version_sort_1(rb_self, rb_versions, version_compare_cb_r);
 }
 
+struct compare_context {
+	VALUE rb_version_a, rb_version_b;
+	struct version_number *version_a, *version_b;
+};
+
+static VALUE
+rb_version_compare_cb(VALUE arg)
+{
+	struct compare_context *context = (struct compare_context *)arg;
+
+	context->version_a = parse_version_number(StringValueCStr(context->rb_version_a));
+	context->version_b = parse_version_number(StringValueCStr(context->rb_version_b));
+
+	return INT2NUM(version_compare_cb(&context->version_a, &context->version_b));
+}
+
 static VALUE
 rb_version_compare(VALUE rb_self, VALUE rb_version_a, VALUE rb_version_b)
 {
-	struct version_number *version_a = parse_version_number(StringValueCStr(rb_version_a));
-	struct version_number *version_b = parse_version_number(StringValueCStr(rb_version_b));
+	int exception;
+	struct compare_context context = {
+		rb_version_a, rb_version_b,
+		NULL, NULL,
+	};
 
-	VALUE result = INT2NUM(version_compare_cb(&version_a, &version_b));
+	VALUE result = rb_protect(rb_version_compare_cb, (VALUE)&context, &exception);
 
-	xfree(version_a);
-	xfree(version_b);
+	xfree(context.version_a);
+	xfree(context.version_b);
+
+	if (exception) {
+		rb_jump_tag(exception);
+	}
 
 	return result;
 }
