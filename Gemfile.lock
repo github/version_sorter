@@ -6,7 +6,7 @@ PATH
 GEM
   remote: https://rubygems.org/
   specs:
-    rake (10.4.2)
+    rake (12.3.3)
     rake-compiler (0.9.5)
       rake
     test-unit (2.0.9)
