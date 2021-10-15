@@ -73,13 +73,13 @@ class VersionSorterTest < Test::Unit::TestCase
 
   def test_handles_non_version_data
     non_versions = [
-      "", " ", ".", "-", "ćevapčići", "The Quick Brown Fox", '!@#$%^&*()',
+      " ", ".", "-", "", "ćevapčići", "The Quick Brown Fox", '!@#$%^&*()',
       "<--------->", "a12a8a4a22122d01541b62193e9bdad7f5eda552", "1." * 65
     ]
     sorted = [
-      "<--------->", "-", "The Quick Brown Fox",
-      "a12a8a4a22122d01541b62193e9bdad7f5eda552", "ćevapčići",
-      "", " ", ".", '!@#$%^&*()', "1." * 65
+      "", " ", '!@#$%^&*()', "-", ".", "<--------->",
+      "The Quick Brown Fox", "a12a8a4a22122d01541b62193e9bdad7f5eda552",
+      "ćevapčići", "1." * 65
     ]
 
     assert_equal sorted, VersionSorter.sort(non_versions)
