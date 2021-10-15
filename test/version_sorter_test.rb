@@ -19,6 +19,20 @@ class VersionSorterTest < Test::Unit::TestCase
     assert_equal sorted_versions, VersionSorter.sort(versions)
   end
 
+  def test_sorts_versions_correctly_with_lowercase_prefixes
+    versions = %w( v1.0.9 v1.0.10 v2.0 v3.1.4.2 v1.0.9a )
+    sorted_versions = %w( v1.0.9a v1.0.9 v1.0.10 v2.0 v3.1.4.2 )
+
+    assert_equal sorted_versions, VersionSorter.sort(versions)
+  end
+
+  def test_sorts_versions_correctly_with_uppercase_prefixes
+    versions = %w( V1.0.9 V1.0.10 V2.0 V3.1.4.2 V1.0.9a )
+    sorted_versions = %w( V1.0.9a V1.0.9 V1.0.10 V2.0 V3.1.4.2 )
+
+    assert_equal sorted_versions, VersionSorter.sort(versions)
+  end
+
   def test_sorts_versions_like_rubygems
     versions = %w(1.0.9.b 1.0.9 1.0.10 2.0 3.1.4.2 1.0.9a 2.0rc2 2.0-rc1)
     if !Gem.respond_to?(:rubygems_version) || Gem.rubygems_version < Gem::Version.new('2.1.0')
