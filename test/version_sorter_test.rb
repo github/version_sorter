@@ -85,6 +85,17 @@ class VersionSorterTest < Test::Unit::TestCase
     assert_equal sorted, VersionSorter.sort(non_versions)
   end
 
+  def test_sorts_non_version_data_with_trailing_numbers
+    non_versions = [
+      "my-patch-2", "my-patch1", "my-patch2", "my-patch", "my-patch-1"
+    ]
+    sorted = [
+      "my-patch", "my-patch-1", "my-patch-2", "my-patch1", "my-patch2"
+    ]
+
+    assert_equal sorted, VersionSorter.sort(non_versions)
+  end
+
   def test_sort_bang
     versions = ["10.0", "1.0", "2.0"]
     VersionSorter.sort! versions
