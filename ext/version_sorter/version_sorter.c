@@ -153,10 +153,7 @@ parse_version_number(const char *string)
 		if (string[offset] == '-' || isalpha(string[offset])) {
 			uint16_t start = offset;
 
-			if (string[offset] == '-')
-				offset++;
-
-			while (isalpha(string[offset]))
+			while (string[offset] == '-' || isalpha(string[offset]))
 				offset++;
 
 			version->comp[comp_n].string.offset = start;
