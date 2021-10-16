@@ -96,6 +96,19 @@ class VersionSorterTest < Test::Unit::TestCase
     assert_equal sorted, VersionSorter.sort(non_versions)
   end
 
+  def test_yui_style_tags
+    yui_tags = [
+      "yui3-571", "yui3-309", "yui3-1405", "yui3-1537", "yui3-440",
+      "yui3-572", "yui3-1406", "yui3-1538", "yui3-441", "yui3-573"
+    ]
+    sorted = [
+      "yui3-309", "yui3-440", "yui3-441", "yui3-571", "yui3-572",
+      "yui3-573", "yui3-1405", "yui3-1406", "yui3-1537", "yui3-1538"
+    ]
+
+    assert_equal sorted, VersionSorter.sort(yui_tags)
+  end
+
   def test_sort_bang
     versions = ["10.0", "1.0", "2.0"]
     VersionSorter.sort! versions
