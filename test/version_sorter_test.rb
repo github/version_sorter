@@ -109,6 +109,13 @@ class VersionSorterTest < Test::Unit::TestCase
     assert_equal sorted, VersionSorter.sort(yui_tags)
   end
 
+  def test_readme_examples
+    readme_versions = ["1.0.9", "2.0", "1.0.10", "1.0.3", "2.0.pre"]
+    sorted = ["1.0.3", "1.0.9", "1.0.10", "2.0.pre", "2.0"]
+
+    assert_equal sorted, VersionSorter.sort(readme_versions)
+  end
+
   def test_sort_bang
     versions = ["10.0", "1.0", "2.0"]
     VersionSorter.sort! versions
