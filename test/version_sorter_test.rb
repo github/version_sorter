@@ -90,7 +90,7 @@ class VersionSorterTest < Test::Unit::TestCase
       "my-patch-2", "my-patch1", "my-patch2", "my-patch", "my-patch-1"
     ]
     sorted = [
-      "my-patch", "my-patch-1", "my-patch-2", "my-patch1", "my-patch2"
+      "my-patch", "my-patch1", "my-patch2", "my-patch-1", "my-patch-2"
     ]
 
     assert_equal sorted, VersionSorter.sort(non_versions)
