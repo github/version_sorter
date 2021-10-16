@@ -114,6 +114,24 @@ parse_version_number(const char *string)
 
 	version = grow_version_number(version, comp_alloc);
 
+	// Does this input look like a version? e.g. "1.0", "1.2.3", "v1", "V1"
+	int non_version = !(
+		isdigit(string[0]) ||
+		(
+			(string[0] == 'v' || string[0] == 'V') && isdigit(string[1])
+		)
+	);
+
+	// If it does NOT look like a version, short-circuit to sort as a string
+	if (non_version) {
+		version->comp[0].string.offset = 0;
+		version->comp[0].string.len = strlen(string);
+		version->original = string;
+		version->num_flags = num_flags;
+		version->size = 1;
+		return version;
+	}
+
 	for (offset = 0; string[offset] && comp_n < 64;) {
 		if (comp_n >= comp_alloc) {
 			comp_alloc += 4;
