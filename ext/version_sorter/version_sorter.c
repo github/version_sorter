@@ -71,6 +71,10 @@ compare_version_number(const struct version_number *a,
 		}
 	}
 
+	if (a->size == 0 || b->size == 0) {
+		return strcmp(a->original, b->original);
+	}
+
 	if (a->size < b->size)
 		return (b->num_flags & (1ull << n)) ? -1 : 1;
 
