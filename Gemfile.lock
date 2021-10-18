@@ -19,7 +19,7 @@ PLATFORMS
 DEPENDENCIES
   rake
   rake-compiler
-  test-unit (~> 3.3.0)
+  test-unit (~> 3.3.9)
   version_sorter!
 
 BUNDLED WITH
