@@ -72,6 +72,12 @@ class VersionSorterTest < Test::Unit::TestCase
   end
 
   def test_handles_non_version_data_but_not_deterministic
+    # NOTES:
+    # - This test uses the same inputs as the previous test but
+    #   supplies them in a different order.
+    # - It also expects the same outputs in the same order.
+    # - Alas, it will fail because the sorting of non-alphanumeric
+    #   strings is currently non-deterministic.
     non_versions = [
       "ćevapčići", "The Quick Brown Fox", '!@#$%^&*()',
       "<--------->", "a12a8a4a22122d01541b62193e9bdad7f5eda552", "1." * 65,
