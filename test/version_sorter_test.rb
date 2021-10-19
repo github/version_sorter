@@ -96,6 +96,7 @@ class VersionSorterTest < Test::Unit::TestCase
     assert_equal sorted, VersionSorter.sort(non_versions)
   end
 
+  # This verifies the sort order of a subset of `test/tags.txt`
   def test_yui_style_tags
     yui_tags = [
       "yui3-571", "yui3-309", "yui3-1405", "yui3-1537", "yui3-440",
@@ -109,6 +110,7 @@ class VersionSorterTest < Test::Unit::TestCase
     assert_equal sorted, VersionSorter.sort(yui_tags)
   end
 
+  # This verifies the sort order of the example in `README.md`
   def test_readme_examples
     readme_versions = ["1.0.9", "2.0", "1.0.10", "1.0.3", "2.0.pre"]
     sorted = ["1.0.3", "1.0.9", "1.0.10", "2.0.pre", "2.0"]
