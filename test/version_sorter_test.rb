@@ -19,6 +19,20 @@ class VersionSorterTest < Test::Unit::TestCase
     assert_equal sorted_versions, VersionSorter.sort(versions)
   end
 
+  def test_sorts_versions_correctly_with_lowercase_prefixes
+    versions = %w( v1.0.9 v1.0.10 v2.0 v3.1.4.2 v1.0.9a )
+    sorted_versions = %w( v1.0.9a v1.0.9 v1.0.10 v2.0 v3.1.4.2 )
+
+    assert_equal sorted_versions, VersionSorter.sort(versions)
+  end
+
+  def test_sorts_versions_correctly_with_uppercase_prefixes
+    versions = %w( V1.0.9 V1.0.10 V2.0 V3.1.4.2 V1.0.9a )
+    sorted_versions = %w( V1.0.9a V1.0.9 V1.0.10 V2.0 V3.1.4.2 )
+
+    assert_equal sorted_versions, VersionSorter.sort(versions)
+  end
+
   def test_sorts_versions_like_rubygems
     versions = %w(1.0.9.b 1.0.9 1.0.10 2.0 3.1.4.2 1.0.9a 2.0rc2 2.0-rc1)
     if !Gem.respond_to?(:rubygems_version) || Gem.rubygems_version < Gem::Version.new('2.1.0')
@@ -38,7 +52,7 @@ class VersionSorterTest < Test::Unit::TestCase
   end
 
   def test_reverse_sorts_versions_correctly
-    versions = %w(1.0.9 1.0.10 2.0 3.1.4.2 1.0.9a)
+    versions = %w( 1.0.9 1.0.10 2.0 3.1.4.2 1.0.9a )
     sorted_versions = %w( 3.1.4.2 2.0 1.0.10 1.0.9 1.0.9a )
 
     assert_equal sorted_versions, VersionSorter.rsort(versions)
@@ -59,16 +73,49 @@ class VersionSorterTest < Test::Unit::TestCase
 
   def test_handles_non_version_data
     non_versions = [
-      "", " ", ".", "-", "ćevapčići", "The Quick Brown Fox", '!@#$%^&*()',
+      " ", ".", "-", "", "ćevapčići", "The Quick Brown Fox", '!@#$%^&*()',
       "<--------->", "a12a8a4a22122d01541b62193e9bdad7f5eda552", "1." * 65
     ]
     sorted = [
-      "<--------->", "-", "The Quick Brown Fox",
-      "a12a8a4a22122d01541b62193e9bdad7f5eda552", "ćevapčići",
-      "", " ", ".", '!@#$%^&*()', "1." * 65
+      "", " ", '!@#$%^&*()', "-", ".", "<--------->",
+      "The Quick Brown Fox", "a12a8a4a22122d01541b62193e9bdad7f5eda552",
+      "ćevapčići", "1." * 65
     ]
 
     assert_equal sorted, VersionSorter.sort(non_versions)
+  end
+
+  def test_sorts_non_version_data_with_trailing_numbers
+    non_versions = [
+      "my-patch-2", "my-patch1", "my-patch2", "my-patch", "my-patch-1"
+    ]
+    sorted = [
+      "my-patch", "my-patch1", "my-patch2", "my-patch-1", "my-patch-2"
+    ]
+
+    assert_equal sorted, VersionSorter.sort(non_versions)
+  end
+
+  # This verifies the sort order of a subset of `test/tags.txt`
+  def test_yui_style_tags
+    yui_tags = [
+      "yui3-571", "yui3-309", "yui3-1405", "yui3-1537", "yui3-440",
+      "yui3-572", "yui3-1406", "yui3-1538", "yui3-441", "yui3-573"
+    ]
+    sorted = [
+      "yui3-309", "yui3-440", "yui3-441", "yui3-571", "yui3-572",
+      "yui3-573", "yui3-1405", "yui3-1406", "yui3-1537", "yui3-1538"
+    ]
+
+    assert_equal sorted, VersionSorter.sort(yui_tags)
+  end
+
+  # This verifies the sort order of the example in `README.md`
+  def test_readme_examples
+    readme_versions = ["1.0.9", "2.0", "1.0.10", "1.0.3", "2.0.pre"]
+    sorted = ["1.0.3", "1.0.9", "1.0.10", "2.0.pre", "2.0"]
+
+    assert_equal sorted, VersionSorter.sort(readme_versions)
   end
 
   def test_sort_bang

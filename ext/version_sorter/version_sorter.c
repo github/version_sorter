@@ -71,6 +71,10 @@ compare_version_number(const struct version_number *a,
 		}
 	}
 
+	if (max_n == 0) {
+		return strcmp(a->original, b->original);
+	}
+
 	if (a->size < b->size)
 		return (b->num_flags & (1ull << n)) ? -1 : 1;
 
@@ -149,10 +153,7 @@ parse_version_number(const char *string)
 		if (string[offset] == '-' || isalpha(string[offset])) {
 			uint16_t start = offset;
 
-			if (string[offset] == '-')
-				offset++;
-
-			while (isalpha(string[offset]))
+			while (string[offset] == '-' || isalpha(string[offset]))
 				offset++;
 
 			version->comp[comp_n].string.offset = start;
