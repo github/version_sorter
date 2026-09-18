@@ -6,11 +6,11 @@ PATH
 GEM
   remote: https://rubygems.org/
   specs:
-    power_assert (2.0.1)
+    power_assert (3.1.0)
     rake (13.0.6)
     rake-compiler (1.1.1)
       rake
-    test-unit (3.3.9)
+    test-unit (3.7.8)
       power_assert
 
 PLATFORMS
@@ -19,7 +19,7 @@ PLATFORMS
 DEPENDENCIES
   rake
   rake-compiler
-  test-unit (~> 3.3.9)
+  test-unit (~> 3.7.8)
   version_sorter!
 
 BUNDLED WITH
